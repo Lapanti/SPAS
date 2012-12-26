@@ -56,6 +56,29 @@ public class Nelement {
 	}
 
 	/**
+	 * Method for setting Nelement's id.
+	 * 
+	 * @param id
+	 *            The id for this Nelement.
+	 */
+	public void setOrgId(String id) {
+		info.put("org_id", id);
+	}
+
+	/**
+	 * Method for getting the id of current Nelement.
+	 * 
+	 * @return The Nelement's id or null, if it doesn't exist.
+	 */
+	public String getOrgId() {
+		try {
+			return (String) info.get("org_id");
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	/**
 	 * Method for setting Nelement's name.
 	 * 
 	 * @param name

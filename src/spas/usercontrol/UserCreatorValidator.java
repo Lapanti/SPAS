@@ -5,6 +5,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Scanner;
 
 import org.apache.catalina.tribes.util.Arrays;
 
@@ -20,10 +21,9 @@ import sun.misc.BASE64Encoder;
  * 
  */
 public class UserCreatorValidator {
-	private final static int ITERATION_COUNT = 1001;
+	private final static int ITERATION_COUNT = 1000;
 	private UserXMLHandler handler = new UserXMLHandler();
 
-	@SuppressWarnings("finally")
 	public boolean authenticate(String username, String pword) {
 		try {
 			boolean userExist = true;
@@ -48,37 +48,76 @@ public class UserCreatorValidator {
 			}
 			byte[] bDigest = base64ToByte(digest);
 			byte[] bSalt = base64ToByte(salt);
-			
+
 			byte[] proposedDigest = getHash(pword, bSalt);
-			
+
 			return Arrays.equals(proposedDigest, bDigest) && userExist;
-		} finally {
+		} catch (Exception ex) {
 			return false;
 		}
 	}
 
-	@SuppressWarnings("finally")
-	public boolean createUser(String username, String pword) {
+	public boolean createUser(String username, String pword, String email) {
 		try {
 			if (username != null && pword != null) {
+				if (handler.userExists(username)) {
+					return false;
+				}
 				SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
 				byte[] bSalt = new byte[8];
 				random.nextBytes(bSalt);
 				byte[] bDigest = getHash(pword, bSalt);
 				String sDigest = byteToBase64(bDigest);
 				String sSalt = byteToBase64(bSalt);
-				handler.saveUser(username, sDigest, sSalt);
-				return true;
+				return handler.saveUser(username, sDigest, sSalt, email);
 			}
-		} finally {
-			return false;
+		} catch (Exception ex) {
 		}
+		return false;
+	}
+
+	public boolean removeUser(String username, String pword) {
+		if (authenticate(username, pword)) {
+			return handler.deleteUser(username);
+		}
+		return false;
+	}
+
+	public boolean changePassword(String username, String newpword) {
+		try {
+			if (username != null && newpword != null) {
+				if (!handler.userExists(username)) {
+					return false;
+				}
+				SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
+				byte[] bSalt = new byte[8];
+				random.nextBytes(bSalt);
+				byte[] bDigest = getHash(newpword, bSalt);
+				String sDigest = byteToBase64(bDigest);
+				String sSalt = byteToBase64(bSalt);
+				return handler.changePassword(username, sDigest, sSalt);
+			}
+		} catch (Exception ex) {
+		}
+		return false;
+	}
+
+	public boolean changeEmail(String username, String pword, String newmail) {
+		if (username != null && pword != null) {
+			if (!handler.userExists(username)) {
+				return false;
+			}
+			if (authenticate(username, pword)) {
+				return handler.changeEmail(username, newmail);
+			}
+		}
+		return false;
 	}
 
 	@SuppressWarnings("static-method")
 	public byte[] getHash(String pword, byte[] salt)
 			throws NoSuchAlgorithmException, UnsupportedEncodingException {
-		MessageDigest digest = MessageDigest.getInstance("SHA-512");
+		MessageDigest digest = MessageDigest.getInstance("SHA-1");
 		digest.reset();
 		digest.update(salt);
 		byte[] input = digest.digest(pword.getBytes("UTF-8"));
@@ -113,5 +152,30 @@ public class UserCreatorValidator {
 	public static String byteToBase64(byte[] data) throws IOException {
 		BASE64Encoder encoder = new BASE64Encoder();
 		return encoder.encode(data);
+	}
+
+	public static void main(String[] args) {
+		UserCreatorValidator ucv = new UserCreatorValidator();
+		Scanner sc = new Scanner(System.in);
+
+		System.out.println("Username?");
+		String name = sc.nextLine();
+
+		System.out.println("Password?");
+		String pword = sc.nextLine();
+
+		System.out.println("Email??");
+		String email = sc.nextLine();
+
+		System.out.println("Creation? " + ucv.createUser(name, pword, email));
+
+		System.out.println("Username login?");
+		name = sc.nextLine();
+
+		System.out.println("Password login?");
+		pword = sc.nextLine();
+
+		System.out.println("Login success: " + ucv.authenticate(name, pword));
+		sc.close();
 	}
 }

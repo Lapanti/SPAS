@@ -13,8 +13,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 
 import spas.nelements.Assignment;
 import spas.nelements.Course;
@@ -39,6 +37,7 @@ public class XMLReader {
 	private List<Nelement> objs = new ArrayList<Nelement>();
 	private NelementFactory nef = new NelementFactory();
 
+	@SuppressWarnings("finally")
 	public List<Nelement> parseNoppafile(InputSource is) {
 
 		try {
@@ -67,20 +66,11 @@ public class XMLReader {
 			} else if (rootNode.equalsIgnoreCase("EVENTS")) {
 				parseEvents(doc);
 			}
-		} catch (SAXParseException err) {
-			System.out.println("** Parsing error" + ", line "
-					+ err.getLineNumber() + ", uri " + err.getSystemId());
-			System.out.println(" " + err.getMessage());
-
-		} catch (SAXException e) {
-			Exception x = e.getException();
-			((x == null) ? e : x).printStackTrace();
-		} catch (Throwable t) {
-			t.printStackTrace();
+		} finally {
+			List<Nelement> objsCopy = objs;
+			objs = new ArrayList<Nelement>();
+			return objsCopy;
 		}
-		List<Nelement> objsCopy = objs;
-		objs = new ArrayList<Nelement>();
-		return objsCopy;
 	}
 
 	private void parseOrganizations(Document doc) {
@@ -137,6 +127,14 @@ public class XMLReader {
 
 				NodeList textidList = IdElement.getChildNodes();
 				nElement.setId(textidList.item(0).getNodeValue().trim());
+
+				// Getting the organization id for the Department.
+				NodeList orgidList = DepartmentElement
+						.getElementsByTagName("org_id");
+				Element orgIdElement = (Element) orgidList.item(0);
+
+				NodeList textorgidList = orgIdElement.getChildNodes();
+				nElement.setOrgId(textorgidList.item(0).getNodeValue().trim());
 
 				// Getting the name for the Department.
 				NodeList nameList = DepartmentElement
