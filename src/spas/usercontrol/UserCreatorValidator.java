@@ -22,7 +22,7 @@ import sun.misc.BASE64Encoder;
  */
 public class UserCreatorValidator {
 	private final static int ITERATION_COUNT = 1000;
-	private UserXMLHandler handler = new UserXMLHandler();
+	private UserAccountHandler handler = new UserAccountHandler();
 
 	public boolean authenticate(String username, String pword) {
 		try {

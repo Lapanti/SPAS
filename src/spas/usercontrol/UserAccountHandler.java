@@ -14,10 +14,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import spas.XMLTools;
+
 import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 import com.sun.org.apache.xml.internal.serialize.XMLSerializer;
 
-public class UserXMLHandler {
+public class UserAccountHandler {
 	String startPath = "resources/";
 	final String basefile = "resources/model/user.xml";
 
@@ -69,13 +71,7 @@ public class UserXMLHandler {
 					new File(startPath + name + ".xml")), format);
 
 			serializer.serialize(doc);
-			/*
-			 * File newfile = new File(startPath + name + ".xml"); if
-			 * (newfile.createNewFile()) {
-			 * System.out.println("Tiedosto luotiin");
-			 * 
-			 * newfile.cr }
-			 */
+			
 			return userExists(name);
 		} catch (Exception ex) {
 			return false;
@@ -112,7 +108,7 @@ public class UserXMLHandler {
 					Element LoginElement = (Element) LoginNode;
 
 					// Checking to see if user element is the one suggested.
-					if (getTagValue("username", LoginElement).equalsIgnoreCase(
+					if (XMLTools.getTagValue("username", LoginElement).equalsIgnoreCase(
 							username)) {
 						return true;
 					}
@@ -140,16 +136,16 @@ public class UserXMLHandler {
 				Element LoginElement = (Element) LoginNode;
 
 				// Checking to see if user element is the one requested.
-				if (getTagValue("username", LoginElement).equalsIgnoreCase(
+				if (XMLTools.getTagValue("username", LoginElement).equalsIgnoreCase(
 						username)) {
 					// Username matched, getting pword and salt.
 					String[] pwordANDsalt = new String[2];
 
 					// Getting the pword.
-					pwordANDsalt[0] = getTagValue("pword", LoginElement);
+					pwordANDsalt[0] = XMLTools.getTagValue("pword", LoginElement);
 
 					// Getting the salt.
-					pwordANDsalt[1] = getTagValue("salt", LoginElement);
+					pwordANDsalt[1] = XMLTools.getTagValue("salt", LoginElement);
 
 					return pwordANDsalt;
 				}
@@ -176,11 +172,11 @@ public class UserXMLHandler {
 				Element LoginElement = (Element) LoginNode;
 
 				// Checking to see if user element is the one requested.
-				if (getTagValue("username", LoginElement).equalsIgnoreCase(
+				if (XMLTools.getTagValue("username", LoginElement).equalsIgnoreCase(
 						username)) {
 
 					// Getting the pword.
-					return getTagValue("email", LoginElement);
+					return XMLTools.getTagValue("email", LoginElement);
 				}
 			}
 		} catch (Exception ex) {
@@ -271,14 +267,5 @@ public class UserXMLHandler {
 			}
 		}
 		return false;
-	}
-
-	private static String getTagValue(String sTag, Element element) {
-		NodeList nlList = element.getElementsByTagName(sTag).item(0)
-				.getChildNodes();
-
-		Node nValue = nlList.item(0);
-
-		return nValue.getNodeValue();
 	}
 }
