@@ -1,41 +1,42 @@
 package spas.nelements;
 
 /**
- * Factory-class for creating different NoppaElements. Mostly so that the only
- * thing required to do is call one method instead of calling each and every
- * Nelement's own construction-method.
+ * Factory-class for creating different NElements. Mostly so that the only thing
+ * required to do is call this one method instead of calling each and every
+ * NElement's own constructor.
  * 
  * @author Lauri Lavanti
- * @version 0.1
+ * @version 0.2
+ * @since 0.1
  * 
  */
-public class NelementFactory {
+public class NElementFactory {
 
 	/**
 	 * The only point in NelementFactory, which creates the appropriate
 	 * NoppaElements according to NelementType.
 	 * 
 	 * @param net
-	 *            Which kind of Nelement is called for.
-	 * @return The appropriate Nelement.
+	 *            Which kind of NElement is called for.
+	 * @return The appropriate NElement, or <code>null</code> in case of faulty
+	 *         NElementType.
 	 */
-	@SuppressWarnings("static-method")
-	public Nelement createNoppaElement(NelementType net) {
+	public static NElement createNElement(NElementType net) {
 		switch (net) {
 		case ORGANIZATION:
-			return new Nelement(net);
+			return new NElement(net);
 		case DEPARTMENT:
-			return new Nelement(net);
+			return new NElement(net);
 		case COURSE:
-			return new Course();
+			return new NCourse();
 		case ASSIGNMENT:
-			return new Assignment();
+			return new NEvent(net);
 		case EXERCISE:
-			return new Exercise();
+			return new NEvent(net);
 		case LECTURE:
-			return new Lecture();
+			return new NEvent(net);
 		case OTHER:
-			return new OtherEvent();
+			return new NEvent(net);
 		default:
 			return null;
 		}
