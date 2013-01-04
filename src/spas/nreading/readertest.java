@@ -14,7 +14,7 @@ import spas.nelements.NEvent;
  * purposes only.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  * 
  */

@@ -4,7 +4,7 @@ package spas.nelements;
  * Enumeration to differentiate between different NElements.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  * 
  */
@@ -34,14 +34,6 @@ public enum NElementType {
 	 * @see NEvent
 	 */
 	EXERCISE,
-
-	/**
-	 * @see NEvent
-	 */
 	ASSIGNMENT,
-
-	/**
-	 * @see NEvent;
-	 */
 	OTHER;
 }

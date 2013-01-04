@@ -11,7 +11,7 @@ import java.util.Map;
  * target="_blank">the Noppa API</a>.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  * @see NElementType
  * 

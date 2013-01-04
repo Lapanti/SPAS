@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage;
  * Class for making and sending a new password to user's email.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.2
  * 
  */
@@ -75,7 +75,7 @@ public class EmailNewPassword {
 
 					// Change the old password to the new password.
 					handler.changePassword(username, newpword,
-							LoginTools.byteToBase64(LoginTools.createSalt()));
+							UserHandler.byteToBase64(UserHandler.createSalt()));
 
 					// Set email properties. (At the moment for gmail.)
 					Properties props = new Properties();

@@ -32,10 +32,14 @@ import spas.nelements.NEvent;
  * 
  * @see NReader
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  */
 public class XMLParser {
+
+	private XMLParser() {
+		throw new InstantiationError("Creation of this object is not allowed.");
+	}
 
 	/**
 	 * Parses XML-file into NElement-objects. Gathers all the information
@@ -43,9 +47,8 @@ public class XMLParser {
 	 * 
 	 * @param is
 	 *            InputSource for the XML-file to parse.
-	 * @return Objectified version of the XML-file, either
-	 *         <code>List<NElement</code>, <code>List<NCourse></code> or
-	 *         <code>List<NEvent></code>.
+	 * @return Objectified version of the XML-file, <code>List</code> with class
+	 *         that extends NElement.
 	 */
 	public static List<? extends NElement> parseFile(InputSource is) {
 

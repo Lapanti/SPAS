@@ -17,9 +17,9 @@ import net.fortuna.ical4j.model.component.VEvent;
 import net.fortuna.ical4j.model.component.VTimeZone;
 import net.fortuna.ical4j.model.property.CalScale;
 import net.fortuna.ical4j.model.property.Description;
-import net.fortuna.ical4j.model.property.DtStamp;
 import net.fortuna.ical4j.model.property.Location;
 import net.fortuna.ical4j.model.property.Method;
+import net.fortuna.ical4j.model.property.Organizer;
 import net.fortuna.ical4j.model.property.ProdId;
 import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Transp;
@@ -33,7 +33,7 @@ import spas.nreading.NReader;
  * Class for creating an iCalendar representation of user's courses' events.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.2
  * 
  */
@@ -68,8 +68,7 @@ public class CalendarCreator {
 		TimeZone timezone = registry.getTimeZone("Europe/Helsinki");
 		VTimeZone tz = timezone.getVTimeZone();
 
-		// Create a timestamp and transparency.
-		DtStamp dtstamp = new DtStamp();
+		// Create a transparency.
 		Transp transp = Transp.OPAQUE;
 
 		// Create the calendar, and insert some basic properties to it.
@@ -89,7 +88,7 @@ public class CalendarCreator {
 			List<NCourse> courses = handler.getCourses();
 			for (NCourse c : courses) {
 				if (handler.getState(c.getId()) == 1) {
-					
+
 					// Get group for course.
 					String group = handler.getGroup(c.getId());
 
@@ -98,7 +97,7 @@ public class CalendarCreator {
 					events.addAll(nreader.getCourseExercises(c));
 					events.addAll(nreader.getCourseAssignments(c));
 					events.addAll(nreader.getCourseEvents(c));
-					
+
 					// Loop through all the events.
 					loop: for (NEvent event : events) {
 						// Create the correct VEvent based on it's type.
@@ -126,10 +125,10 @@ public class CalendarCreator {
 							continue loop;
 						}
 						// Add basic properties to VEvent.
-						vevent.getProperties().add(tz);
-						vevent.getProperties().add(dtstamp);
+						vevent.getProperties().add(tz.getTimeZoneId());
 						vevent.getProperties().add(transp);
 						vevent.getProperties().add(ug.generateUid());
+						vevent.getProperties().add(new Organizer());
 
 						// Add VEvent to calendar.
 						calendar.getComponents().add(vevent);
@@ -147,6 +146,7 @@ public class CalendarCreator {
 
 		} catch (ValidationException | IOException ex) {
 			// These shouldn't happen normally.
+			ex.printStackTrace();
 		}
 		return false;
 	}
@@ -154,7 +154,8 @@ public class CalendarCreator {
 	/**
 	 * Method for making a VEvent object out of NEvent lecture.
 	 * 
-	 * @param lecture NEvent to change into a VEvent.
+	 * @param lecture
+	 *            NEvent to change into a VEvent.
 	 * @return VEvent representation of given NEvent.
 	 */
 	private static VEvent createLecture(NEvent lecture) {
@@ -178,7 +179,8 @@ public class CalendarCreator {
 	/**
 	 * Method for making a VEvent object out of NEvent exercise.
 	 * 
-	 * @param exercise NEvent to change into a VEvent.
+	 * @param exercise
+	 *            NEvent to change into a VEvent.
 	 * @return VEvent representation of given NEvent.
 	 */
 	private static VEvent createExercise(NEvent exercise) {
@@ -213,7 +215,8 @@ public class CalendarCreator {
 	/**
 	 * Method for making a VEvent object out of NEvent event.
 	 * 
-	 * @param event NEvent to change into a VEvent.
+	 * @param event
+	 *            NEvent to change into a VEvent.
 	 * @return VEvent representation of given NEvent.
 	 */
 	private static VEvent createEvent(NEvent event) {
@@ -236,7 +239,8 @@ public class CalendarCreator {
 	/**
 	 * Method for making a VEvent object out of NEvent assignment.
 	 * 
-	 * @param assignment NEvent to change into a VEvent.
+	 * @param assignment
+	 *            NEvent to change into a VEvent.
 	 * @return VEvent representation of given NEvent.
 	 */
 	private static VEvent createAssignment(NEvent assignment) {

@@ -1,4 +1,2 @@
-<%
-session.removeAttribute("username");
-response.sendRedirect("index.jsp");
-%>
+<%@ taglib uri="WEB-INF/tlds/spasTags.tld" prefix="st" %>
+<st:logout />

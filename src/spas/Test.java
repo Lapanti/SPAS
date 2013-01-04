@@ -3,10 +3,10 @@ package spas;
 /**
  * Contains methods for creating a simple testing class.
  * 
- * @see readertest
- * @see usertest
+ * @see nreading.readertest
+ * @see usercontrol.usertest
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  * 
  */

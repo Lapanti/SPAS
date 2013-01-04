@@ -6,11 +6,15 @@ package spas.nelements;
  * NElement's own constructor.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  * 
  */
 public class NElementFactory {
+
+	private NElementFactory() {
+		throw new InstantiationError("Creation of this object is not allowed.");
+	}
 
 	/**
 	 * The only point in NelementFactory, which creates the appropriate

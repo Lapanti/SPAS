@@ -5,6 +5,7 @@
 		<pword></pword>
 		<salt></salt>
 		<email></email>
+		<session-id></session-id>
 	</login>
 	<courses>
 		<course>

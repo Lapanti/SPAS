@@ -5,7 +5,7 @@ package spas.nelements;
  * information considering courses than other NElements.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  * 
  */
@@ -94,7 +94,7 @@ public class NCourse extends NElement {
 	 * Setter for course's group. Only used when asking for a user's courses (if
 	 * user has selected a group).
 	 * 
-	 * @param content
+	 * @param group
 	 *            Group for course.
 	 * @see NElement#info Holder for NElements' info.
 	 */
@@ -118,7 +118,7 @@ public class NCourse extends NElement {
 	/**
 	 * Setter for course's state. Only used with logged users.
 	 * 
-	 * @param content
+	 * @param state
 	 *            State for Course.
 	 * @see NElement#info Holder for NElements' info.
 	 * @see spas.usercontrol.UserCourseHandler#ACTIVE

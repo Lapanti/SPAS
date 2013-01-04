@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+  <tlib-version>1.0</tlib-version>
+    <short-name>st</short-name>
+    <uri>/WEB-INF/tlds/spasTags</uri>
+    <tag>
+        <name>validate</name>
+        <tag-class>spas.taglib.Validation</tag-class>
+        <body-content>empty</body-content>
+        <info>This tag validates user's login.</info>
+    </tag>
+    <tag>
+    	<name>login</name>
+    	<tag-class>spas.taglib.LogIn</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag tries to log user in. It does nothing if user isn't 
+    	registered/user gives wrong password.</info>
+    </tag>
+    <tag>
+    	<name>logout</name>
+    	<tag-class>spas.taglib.LogOut</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag logs user out, then redirects him to frontpage.</info>
+    </tag>
+    <tag>
+    	<name>search</name>
+    	<tag-class>spas.taglib.SearchCourses</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag searches for courses, and prints out it's findings.</info>
+    </tag>
+    <tag>
+    	<name>calendar</name>
+    	<tag-class>spas.taglib.Calendar</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag refreshes/creates user iCalendar 
+    	file and prints out the result.</info>
+    </tag>
+    <tag>
+    	<name>printcourse</name>
+    	<tag-class>spas.taglib.PrintCourse</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will print out the information of course.</info>
+    </tag>
+    <tag>
+    	<name>courseedit</name>
+    	<tag-class>spas.taglib.CourseEdit</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will print out user's courses and forms to edit them.</info>
+    </tag>
+    <tag>
+    	<name>newpword</name>
+    	<tag-class>spas.taglib.NewPword</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to change a new password and 
+    	send it to the appropriate email.</info>
+    </tag>
+    <tag>
+    	<name>register</name>
+    	<tag-class>spas.taglib.Register</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will print out a register form and do the registering.</info>
+    </tag>
+    <tag>
+    	<name>changemail</name>
+    	<tag-class>spas.taglib.ChangeEmail</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to change user's email and act accordingly.</info>
+    </tag>
+    <tag>
+    	<name>changepword</name>
+    	<tag-class>spas.taglib.ChangePword</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to change user's 
+    	password and act accordingly.</info>
+    </tag>
+    <tag>
+    	<name>removeuser</name>
+    	<tag-class>spas.taglib.RemoveUser</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to remove user and act accordingly.</info>
+    </tag>
+    <tag>
+    	<name>printorgs</name>
+    	<tag-class>spas.taglib.PrintOrgs</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will print out organizations in select tags</info>
+    </tag>
+    <tag>
+    	<name>printdepts</name>
+    	<tag-class>spas.taglib.PrintDepts</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will print out departments in select tags</info>
+    </tag>
+</taglib>

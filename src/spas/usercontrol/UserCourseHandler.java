@@ -21,7 +21,7 @@ import spas.nelements.NElementType;
  * Handles the course-saving and editing aspect of user database.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.2
  * 
  */
@@ -162,8 +162,13 @@ public class UserCourseHandler {
 				Element courseElement = (Element) courseList.item(i);
 				if (XMLTools.getTagValue("id", courseElement).equals(id)) {
 					// Return current course's status.
+					try {
 					return Integer.parseInt(XMLTools.getTagValue("state",
 							courseElement));
+					} catch (NumberFormatException e) {
+						// In case there is a problem with getting status.
+						return 0;
+					}
 				}
 			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
@@ -199,8 +204,8 @@ public class UserCourseHandler {
 				if (XMLTools.getTagValue("id", courseElement).equals(id)) {
 
 					// Change the status.
-					courseElement.appendChild(XMLTools.setTextValue(doc,
-							"state", state + ""));
+					courseElement.appendChild(XMLTools.setTextValue(
+							courseElement, "state", state + ""));
 
 					// Attach it to courses-element.
 					coursesElement.appendChild(courseElement);

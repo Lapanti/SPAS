@@ -7,7 +7,7 @@ import java.util.Calendar;
  * about their duration etc.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  * 
  */
@@ -50,7 +50,7 @@ public class NEvent extends NElement {
 	/**
 	 * Setter for event's description.
 	 * 
-	 * @param summary
+	 * @param description
 	 *            The description for event.
 	 * @see NElement#info Holder for NElements' info.
 	 */

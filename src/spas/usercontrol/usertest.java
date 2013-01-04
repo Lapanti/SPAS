@@ -11,7 +11,7 @@ import spas.nelements.NCourse;
  * purposes only.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  * 
  */
@@ -29,7 +29,7 @@ public class usertest extends Test {
 		String cid2 = "Mat-1.1110";
 		String group = "OLO 5";
 
-		LoginTools ucv = new LoginTools("WebContent/resources/admin.xml");
+		UserHandler ucv = new UserHandler("WebContent/resources/admin.xml");
 		UserCourseHandler uch = new UserCourseHandler(
 				"WebContent/resources/admin.xml");
 		EmailNewPassword enp = new EmailNewPassword();

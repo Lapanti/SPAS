@@ -18,9 +18,9 @@ import spas.XMLTools;
  * database-system to another one. This version uses XML-files to not be reliant
  * on server's databases.
  * 
- * @see LoginTools
+ * @see UserHandler
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.1
  */
 public class UserLoginHandler {
@@ -43,7 +43,7 @@ public class UserLoginHandler {
 	/**
 	 * Creates and saves the information for a new user.
 	 * 
-	 * @see LoginTools#createUser(String, String, String, String)
+	 * @see UserHandler#createUser(String, String, String, String)
 	 *      Security-perspective.
 	 * @param name
 	 *            User's login name.
@@ -62,7 +62,7 @@ public class UserLoginHandler {
 		try {
 			// Parse the file to document.
 			Document doc = XMLTools.parse(new File(modelpath));
-			
+
 			// Get login-element to be edited.
 			Element loginElement = XMLTools.getElement(doc, "login");
 
@@ -81,6 +81,10 @@ public class UserLoginHandler {
 			loginElement
 					.appendChild(XMLTools.setTextValue(doc, "email", email));
 
+			// Setting the session-id element.
+			loginElement.appendChild(XMLTools.setTextValue(doc, "session-id",
+					""));
+
 			// Attach it all back to document.
 			doc.getDocumentElement().appendChild(loginElement);
 
@@ -98,7 +102,7 @@ public class UserLoginHandler {
 	 * Deletes user from database. Be very careful when calling this, as it is
 	 * final.
 	 * 
-	 * @see LoginTools#removeUser(String, String) Security-perspective.
+	 * @see UserHandler#removeUser(String, String) Security-perspective.
 	 * @param username
 	 *            The user's name to be deleted.
 	 * @return <code>true</code>, if and only if, everything worked.
@@ -158,7 +162,7 @@ public class UserLoginHandler {
 	/**
 	 * Get user's email.
 	 * 
-	 * @see LoginTools#getEmail(String) Security-perspective.
+	 * @see UserHandler#getEmail(String) Security-perspective.
 	 * @param username
 	 *            User's registered login name.
 	 * @return User's registered email, or <code>null</code> if there was an
@@ -193,7 +197,7 @@ public class UserLoginHandler {
 	/**
 	 * Changes user's registered password.
 	 * 
-	 * @see LoginTools#changePassword(String, String, String)
+	 * @see UserHandler#changePassword(String, String, String)
 	 *      Security-perspective.
 	 * @param username
 	 *            The user's login name.
@@ -237,7 +241,7 @@ public class UserLoginHandler {
 	/**
 	 * Changes user's registered email.
 	 * 
-	 * @see LoginTools#changeEmail(String, String, String) Security-perspective.
+	 * @see UserHandler#changeEmail(String, String, String) Security-perspective.
 	 * @param username
 	 *            The user's login name.
 	 * @param newmail
@@ -270,6 +274,79 @@ public class UserLoginHandler {
 			// These shouldn't normally happen.
 		}
 		return false;
+	}
+
+	/**
+	 * Changes user's saved session-id.
+	 * 
+	 * @param username
+	 *            User's registered login name.
+	 * @param id
+	 *            User's session-id.
+	 * @return <code>true</code>, if and only if, nothing went wrong.
+	 */
+	boolean changeSessionId(String username, String id) {
+
+		// If user doesn't exist, do nothing.
+		if (!userExists(username)) {
+			return false;
+		}
+		try {
+			// Parse file to document.
+			Document doc = XMLTools.parse(userfile);
+
+			// Get element to be edited.
+			Element loginElement = XMLTools.getElement(doc, "login");
+
+			// Changing the email.
+			loginElement.appendChild(XMLTools.setTextValue(doc, "session-id",
+					id));
+
+			// Attach it all back to document.
+			doc.getDocumentElement().appendChild(loginElement);
+
+			// Save it to file.
+			return XMLTools.saveFile(doc, userfile);
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			// These shouldn't normally happen.
+		}
+		return false;
+	}
+
+	/**
+	 * Checks, if given session-id matches the one saved on file.
+	 * 
+	 * @param username
+	 *            User's registered login name.
+	 * @param id
+	 *            User's current session id.
+	 * @return <code>true</code>, if and only if, id matched the one on file.
+	 */
+	boolean validateUser(String username, String id) {
+		// If user doesn't exist, do nothing.
+		if (!userExists(username)) {
+			return false;
+		}
+		try {
+			// Parse file to document.
+			Document doc = XMLTools.parse(userfile);
+
+			// Get the element to be examined.
+			Element LoginElement = XMLTools.getElement(doc, "login");
+
+			// Checking to see if user element is the one requested.
+			if (XMLTools.getTagValue("username", LoginElement)
+					.equalsIgnoreCase(username)) {
+
+				// Checking if session-ids match.
+				return XMLTools.getTagValue("session-id", LoginElement).equals(
+						id);
+			}
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			// These should never happen.
+		}
+		return false;
+
 	}
 
 	/**

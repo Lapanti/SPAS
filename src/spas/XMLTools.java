@@ -17,6 +17,7 @@ import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -24,7 +25,7 @@ import org.xml.sax.SAXException;
  * Contains static methods for helping with XML reading and writing.
  * 
  * @author Lauri Lavanti
- * @version 0.2
+ * @version 1.0
  * @since 0.2
  * 
  */
@@ -34,6 +35,10 @@ public class XMLTools {
 	 */
 	private static DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 			.newInstance();
+
+	private XMLTools() {
+		throw new InstantiationError("Creation of this object is not allowed.");
+	}
 
 	/**
 	 * Get tag value of given tag from element.
@@ -47,9 +52,25 @@ public class XMLTools {
 	 */
 	public static String getTagValue(String sTag, Element element) {
 		// Find the node sTag.
-		Node nValue = element.getElementsByTagName(sTag).item(0)
-				.getChildNodes().item(0);
+		NodeList nList = element.getElementsByTagName(sTag);
 
+		// Checking for nullpointers.
+		if (nList.getLength() == 0) {
+			return "";
+		}
+
+		// In case of a nullpointer.
+		NodeList childList = nList.item(0).getChildNodes();
+
+		// Checking for nullpointers.
+		if (childList.getLength() == 0) {
+			return "";
+		}
+
+		// Finally get to the right tag.
+		Node nValue = childList.item(0);
+
+		// Checking for nullpointers.
 		if (nValue == null) {
 			return "";
 		}
@@ -93,7 +114,8 @@ public class XMLTools {
 	/**
 	 * Change/set the Text of given node.
 	 * 
-	 * @param element Element in which node is found.
+	 * @param element
+	 *            Element in which node is found.
 	 * @param node
 	 *            Node to be edited.
 	 * @param text
