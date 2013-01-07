@@ -6,7 +6,7 @@ package spas;
  * @see nreading.readertest
  * @see usercontrol.usertest
  * @author Lauri Lavanti
- * @version 1.0
+ * @version 1.1
  * @since 0.1
  * 
  */

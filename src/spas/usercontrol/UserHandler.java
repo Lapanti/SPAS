@@ -21,7 +21,7 @@ import sun.misc.BASE64Encoder;
  * target="_bank">here</a> as a base.
  * 
  * @author Lauri Lavanti
- * @version 1.0
+ * @version 1.1
  * @since 0.1
  * 
  */
@@ -34,18 +34,15 @@ public class UserHandler {
 	/**
 	 * Used for the XML-perspective
 	 */
-	private UserLoginHandler handler;
-
+	private UserLoginHandler handler = new UserLoginHandler();
+	
 	/**
-	 * Constructor for LoginTools. Only thing of relevance is the correctness of
-	 * userpath.
+	 * Sets the path to userfile. Must be set before doing anything.
 	 * 
-	 * @param userpath
-	 *            The absolute path to user's file that contains login
-	 *            information.
+	 * @param path Absolute path to user's file.
 	 */
-	public UserHandler(String userpath) {
-		handler = new UserLoginHandler(userpath);
+	public void setPath(String path) {
+		handler.setUserfile(path);
 	}
 
 	/**
@@ -129,11 +126,6 @@ public class UserHandler {
 
 		// If either username or password was null, do nothing.
 		if (username != null && pword != null) {
-
-			// Make sure a user with that username doesn't already exist.
-			if (handler.userExists(username)) {
-				return false;
-			}
 
 			// Create salt. See createSalt() for reasoning.
 			byte[] bSalt = createSalt();
@@ -408,11 +400,5 @@ public class UserHandler {
 	static String byteToBase64(byte[] data) {
 		BASE64Encoder encoder = new BASE64Encoder();
 		return encoder.encode(data);
-	}
-
-	public static void main(String[] args) {
-		UserHandler handler = new UserHandler(
-				"WebContent/resources/users/admin.xml");
-		handler.createUser("admin", "admin", "asd", "WebContent/resources/model/user.xml");
 	}
 }

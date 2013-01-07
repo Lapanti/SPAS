@@ -3,7 +3,12 @@ package spas.usercontrol;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import spas.nhandling.NReader;
+import spas.nhandling.nelements.NCourse;
+import spas.nhandling.nelements.NEvent;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
@@ -25,15 +30,12 @@ import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.UidGenerator;
-import spas.nelements.NCourse;
-import spas.nelements.NEvent;
-import spas.nreading.NReader;
 
 /**
  * Class for creating an iCalendar representation of user's courses' events.
  * 
  * @author Lauri Lavanti
- * @version 1.0
+ * @version 1.1
  * @since 0.2
  * 
  */
@@ -92,38 +94,39 @@ public class CalendarCreator {
 					// Get group for course.
 					String group = handler.getGroup(c.getId());
 
-					// Get events for course and merge them all to one list.
-					List<NEvent> events = nreader.getCourseLectures(c);
-					events.addAll(nreader.getCourseExercises(c));
-					events.addAll(nreader.getCourseAssignments(c));
-					events.addAll(nreader.getCourseEvents(c));
+					// Create list into add all the VEvents for further editing.
+					List<VEvent> vevents = new ArrayList<VEvent>();
 
-					// Loop through all the events.
-					loop: for (NEvent event : events) {
-						// Create the correct VEvent based on it's type.
-						VEvent vevent;
-						type: switch (event.type) {
-						case LECTURE:
-							vevent = createLecture(event);
-							break type;
-						case EXERCISE:
-							// In case of a chosen group, ignore other
-							// exercises.
-							if (!group.equalsIgnoreCase(event.getGroup())
-									&& !group.equals("")) {
-								continue loop;
-							}
-							vevent = createExercise(event);
-							break type;
-						case ASSIGNMENT:
-							vevent = createAssignment(event);
-							break type;
-						case OTHER:
-							vevent = createEvent(event);
-							break type;
-						default:
-							continue loop;
-						}
+					// Get lectures for course and loop through them all.
+					List<NEvent> lectures = nreader.getCourseLectures(c);
+					for (NEvent event : lectures) {
+						vevents.add(createLecture(event));
+					}
+
+					// Get exercises for course and loop through them all.
+					List<NEvent> exercises = nreader.getCourseExercises(c);
+					for (NEvent event : exercises) {
+						// Make sure exercises of a wrong group aren't added.
+						if (group.equals("")
+								|| (!group.equals("") && group.equals(event
+										.getGroup())))
+							vevents.add(createExercise(event));
+					}
+
+					// Get assignments for course and loop through them all.
+					List<NEvent> assignments = nreader.getCourseAssignments(c);
+					for (NEvent event : assignments) {
+						vevents.add(createAssignment(event));
+					}
+
+					// Get events for course and loop through them all.
+					List<NEvent> events = nreader.getCourseEvents(c);
+					for (NEvent event : events) {
+						vevents.add(createEvent(event));
+					}
+
+					// Loop through VEvents.
+					for (VEvent vevent : vevents) {
 						// Add basic properties to VEvent.
 						vevent.getProperties().add(tz.getTimeZoneId());
 						vevent.getProperties().add(transp);
@@ -146,7 +149,6 @@ public class CalendarCreator {
 
 		} catch (ValidationException | IOException ex) {
 			// These shouldn't happen normally.
-			ex.printStackTrace();
 		}
 		return false;
 	}

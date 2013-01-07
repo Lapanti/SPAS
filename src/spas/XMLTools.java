@@ -2,6 +2,8 @@ package spas;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -166,6 +168,30 @@ public class XMLTools {
 	 */
 	public static Element getElement(Document doc, String name) {
 		return (Element) getNode(doc, name);
+	}
+
+	/**
+	 * Returns iterable list of elements from document with given tagname.
+	 * 
+	 * @param doc
+	 *            Document which contains elements.
+	 * @param name
+	 *            Elements tagname.
+	 * @return List of elements with given tagname, or an empty list, if not
+	 *         found.
+	 */
+	public static List<Element> getElements(Document doc, String name) {
+		// Create list to be returned.
+		List<Element> elements = new ArrayList<Element>();
+
+		// Get the NodeList and loop through it to add them to list.
+		NodeList nodes = doc.getElementsByTagName(name);
+		for (int i = 0; i < nodes.getLength(); i++) {
+			elements.add((Element) nodes.item(i));
+		}
+
+		// Return list.
+		return elements;
 	}
 
 	/**

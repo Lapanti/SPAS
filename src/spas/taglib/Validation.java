@@ -2,7 +2,6 @@ package spas.taglib;
 
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -14,39 +13,36 @@ import spas.usercontrol.UserHandler;
  * otherwise logs user out and sends user to front page.
  * 
  * @author Lauri Lavanti
- * @version 1.0
+ * @version 1.1
  * @since 1.0
+ * @see UserHandler
  */
 public class Validation extends TagSupport {
+	private UserHandler handler = new UserHandler();
 
 	@Override
 	public int doStartTag() {
 		// Get session.
 		HttpSession session = pageContext.getSession();
 
-		// Get servlet context.
-		ServletContext cont = pageContext.getServletContext();
-
 		// Get username from session and session id.
 		String username = (String) session.getAttribute("username");
-		String id = session.getId();
 
-		// Create handler.
-		UserHandler handler = new UserHandler(
-				cont.getRealPath("resources/users/" + username + ".xml"));
+		// Set userfile for handler.
+		handler.setPath(pageContext.getServletContext().getRealPath(
+				"resources/users/" + username + ".xml"));
 
 		// Try to validate.
-		if (!handler.validateUser(username, id)) {
+		if (!handler.validateUser(username, session.getId())) {
 			// Validation failed, log out.
-			if (handler.logOut(username)) {
-				session.removeAttribute("username");
-				try {
-					// Send the user back to frontpage.
-					((HttpServletResponse) pageContext.getResponse())
-							.sendRedirect("index.jsp");
-				} catch (IOException e) {
-					// This should never happen.
-				}
+			handler.logOut(username);
+			session.removeAttribute("username");
+			try {
+				// Send the user back to frontpage.
+				((HttpServletResponse) pageContext.getResponse())
+						.sendRedirect("index.jsp");
+			} catch (IOException e) {
+				// This should never happen.
 			}
 		}
 		return SKIP_BODY;

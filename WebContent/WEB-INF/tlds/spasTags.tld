@@ -13,84 +13,114 @@
     </tag>
     <tag>
     	<name>login</name>
-    	<tag-class>spas.taglib.LogIn</tag-class>
+    	<tag-class>spas.taglib.handlers.LogIn</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag tries to log user in. It does nothing if user isn't 
     	registered/user gives wrong password.</info>
     </tag>
     <tag>
     	<name>logout</name>
-    	<tag-class>spas.taglib.LogOut</tag-class>
+    	<tag-class>spas.taglib.handlers.LogOut</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag logs user out, then redirects him to frontpage.</info>
     </tag>
     <tag>
     	<name>search</name>
-    	<tag-class>spas.taglib.SearchCourses</tag-class>
+    	<tag-class>spas.taglib.printers.SearchCourses</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag searches for courses, and prints out it's findings.</info>
     </tag>
     <tag>
     	<name>calendar</name>
-    	<tag-class>spas.taglib.Calendar</tag-class>
+    	<tag-class>spas.taglib.handlers.Calendar</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag refreshes/creates user iCalendar 
     	file and prints out the result.</info>
     </tag>
     <tag>
     	<name>printcourse</name>
-    	<tag-class>spas.taglib.PrintCourse</tag-class>
+    	<tag-class>spas.taglib.printers.PrintCourse</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag will print out the information of course.</info>
     </tag>
     <tag>
-    	<name>courseedit</name>
-    	<tag-class>spas.taglib.CourseEdit</tag-class>
+    	<name>printcourses</name>
+    	<tag-class>spas.taglib.printers.PrintCourses</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag will print out user's courses and forms to edit them.</info>
     </tag>
     <tag>
     	<name>newpword</name>
-    	<tag-class>spas.taglib.NewPword</tag-class>
+    	<tag-class>spas.taglib.handlers.NewPword</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag will try to change a new password and 
     	send it to the appropriate email.</info>
     </tag>
     <tag>
     	<name>register</name>
-    	<tag-class>spas.taglib.Register</tag-class>
+    	<tag-class>spas.taglib.handlers.Register</tag-class>
     	<body-content>empty</body-content>
-    	<info>This tag will print out a register form and do the registering.</info>
+    	<info>This tag will try to log user in.</info>
     </tag>
     <tag>
     	<name>changemail</name>
-    	<tag-class>spas.taglib.ChangeEmail</tag-class>
+    	<tag-class>spas.taglib.handlers.ChangeEmail</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag will try to change user's email and act accordingly.</info>
     </tag>
     <tag>
     	<name>changepword</name>
-    	<tag-class>spas.taglib.ChangePword</tag-class>
+    	<tag-class>spas.taglib.handlers.ChangePword</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag will try to change user's 
     	password and act accordingly.</info>
     </tag>
     <tag>
     	<name>removeuser</name>
-    	<tag-class>spas.taglib.RemoveUser</tag-class>
+    	<tag-class>spas.taglib.handlers.RemoveUser</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag will try to remove user and act accordingly.</info>
     </tag>
     <tag>
     	<name>printorgs</name>
-    	<tag-class>spas.taglib.PrintOrgs</tag-class>
+    	<tag-class>spas.taglib.printers.PrintOrgs</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag will print out organizations in select tags</info>
     </tag>
     <tag>
     	<name>printdepts</name>
-    	<tag-class>spas.taglib.PrintDepts</tag-class>
+    	<tag-class>spas.taglib.printers.PrintDepts</tag-class>
     	<body-content>empty</body-content>
     	<info>This tag will print out departments in select tags</info>
+    </tag>
+    <tag>
+    	<name>activatecourse</name>
+    	<tag-class>spas.taglib.handlers.ActivateCourse</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to activate course and act accordingly</info>
+    </tag>
+    <tag>
+    	<name>deactivatecourse</name>
+    	<tag-class>spas.taglib.handlers.DeactivateCourse</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to deactivate course and act accordingly</info>
+    </tag>
+    <tag>
+    	<name>changecoursegroup</name>
+    	<tag-class>spas.taglib.handlers.ChangeCourseGroup</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to change group for course and act accordingly</info>
+    </tag>
+    <tag>
+    	<name>completecourse</name>
+    	<tag-class>spas.taglib.handlers.CompleteCourse</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to complete course and act accordingly</info>
+    </tag>
+    <tag>
+    	<name>removecourse</name>
+    	<tag-class>spas.taglib.handlers.RemoveCourse</tag-class>
+    	<body-content>empty</body-content>
+    	<info>This tag will try to remove course and act accordingly</info>
     </tag>
 </taglib>

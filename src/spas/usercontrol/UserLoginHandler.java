@@ -20,24 +20,22 @@ import spas.XMLTools;
  * 
  * @see UserHandler
  * @author Lauri Lavanti
- * @version 1.0
+ * @version 1.1
  * @since 0.1
  */
 public class UserLoginHandler {
 	/**
 	 * The file containing user's file.
 	 */
-	private File userfile;
-
+	private File userfile = null;
+	
 	/**
-	 * Constructor for a new UserLoginHandler. Userpath must be absolutely
-	 * correct or all methods will return false or empty.
+	 * Sets path to user's file. Must be set before doing anything else.
 	 * 
-	 * @param userpath
-	 *            The absolute path for user's file.
+	 * @param path Absolute path to user's file.
 	 */
-	UserLoginHandler(String userpath) {
-		userfile = new File(userpath);
+	void setUserfile(String path) {
+		userfile = new File(path);
 	}
 
 	/**
@@ -59,6 +57,9 @@ public class UserLoginHandler {
 	 */
 	boolean saveUser(String name, String pword, String salt, String email,
 			String modelpath) {
+		if (userfile == null || userExists(name)) {
+			return false;
+		}
 		try {
 			// Parse the file to document.
 			Document doc = XMLTools.parse(new File(modelpath));
@@ -69,31 +70,21 @@ public class UserLoginHandler {
 			// Setting the username element.
 			loginElement.appendChild(XMLTools.setTextValue(doc, "username",
 					name));
-
-			// Setting the pword element.
-			loginElement
-					.appendChild(XMLTools.setTextValue(doc, "pword", pword));
-
-			// Setting the salt element.
-			loginElement.appendChild(XMLTools.setTextValue(doc, "salt", salt));
-
-			// Setting the email element.
-			loginElement
-					.appendChild(XMLTools.setTextValue(doc, "email", email));
-
-			// Setting the session-id element.
-			loginElement.appendChild(XMLTools.setTextValue(doc, "session-id",
-					""));
-
-			// Attach it all back to document.
+			
+			// Attach it all back to element.
 			doc.getDocumentElement().appendChild(loginElement);
-
-			// Save it to file and check it exists.
-			return XMLTools.saveFile(doc, userfile) && userExists(name);
+			
+			// Try to save file.
+			if (XMLTools.saveFile(doc, userfile)) {
+				// Try to set password.
+				if (changePassword(name, pword, salt)) {
+					// Try to set email.
+					return changeEmail(name, email);
+				}
+			}
 
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			// These should never happen.
-			e.printStackTrace();
 		}
 		return false;
 	}
@@ -359,7 +350,7 @@ public class UserLoginHandler {
 	boolean userExists(String username) {
 
 		// If userfile doesn't exist or is not a file do nothing.
-		if (!userfile.exists() && !userfile.isFile()) {
+		if (userfile == null || (!userfile.exists() && !userfile.isFile())) {
 			return false;
 		}
 		try {

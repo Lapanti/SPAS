@@ -1,16 +1,18 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="WEB-INF/tlds/spasTags.tld" prefix="st"%>
 <st:validate />
-<jsp:useBean id="nReader" scope="page" class="spas.nreading.NReader" />
-<%@ page import="java.util.*" import="spas.nelements.*"
-	import="java.net.URLEncoder" import="java.net.URLDecoder"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
-	pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
-<%@ include file="parts/head.html"%>
+<head>
+<c:import url="parts/head.html" />
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<title>SPAS - Hae kursseja</title>
+</head>
 <body>
+<c:import url="parts/menu.jsp" />
+<div id="content">
 	<form name="search" action="search.jsp" method="get">
 		Avainsana: <input type="text" name="kword"
 			value="${!empty param.kword ? param.kword : ''}" /> <br />
@@ -26,6 +28,8 @@
 			<st:search />
 		</c:if>
 	</form>
+	</div>
+	<c:import url="parts/footer.html" />
 	<script>
 		$(document).ready(function() {
 			// JavaScript snippet by Vesa Laakso (a.k.a. VesQ). Thanks a lot :)

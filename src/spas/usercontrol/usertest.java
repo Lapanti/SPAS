@@ -3,15 +3,16 @@ package spas.usercontrol;
 import java.util.List;
 import java.util.Scanner;
 
+
 import spas.Test;
-import spas.nelements.NCourse;
+import spas.nhandling.nelements.NCourse;
 
 /**
  * Class for testing different methods/classes of package. For development
  * purposes only.
  * 
  * @author Lauri Lavanti
- * @version 1.0
+ * @version 1.1
  * @since 0.1
  * 
  */
@@ -29,10 +30,11 @@ public class usertest extends Test {
 		String cid2 = "Mat-1.1110";
 		String group = "OLO 5";
 
-		UserHandler ucv = new UserHandler("WebContent/resources/admin.xml");
+		UserHandler ucv = new UserHandler();
 		UserCourseHandler uch = new UserCourseHandler(
 				"WebContent/resources/admin.xml");
-		EmailNewPassword enp = new EmailNewPassword();
+		EmailNewPassword enp = new EmailNewPassword(new UserLoginHandler());
+		ucv.setPath("WebContent/resources/admin.xml");
 
 		boolean testing = true;
 

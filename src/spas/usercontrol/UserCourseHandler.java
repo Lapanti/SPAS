@@ -13,15 +13,15 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import spas.XMLTools;
-import spas.nelements.NCourse;
-import spas.nelements.NElementFactory;
-import spas.nelements.NElementType;
+import spas.nhandling.nelements.NCourse;
+import spas.nhandling.nelements.NElementFactory;
+import spas.nhandling.nelements.NElementType;
 
 /**
  * Handles the course-saving and editing aspect of user database.
  * 
  * @author Lauri Lavanti
- * @version 1.0
+ * @version 1.1
  * @since 0.2
  * 
  */
@@ -102,36 +102,33 @@ public class UserCourseHandler {
 				// Attach it all back to courses-element.
 				coursesElement.appendChild(courseElement);
 
-			} else {
-				/*
-				 * This is the first course to be added, so just going to edit
-				 * existing course-model.
-				 */
+				// Attach it all back to document.
+				doc.getDocumentElement().appendChild(coursesElement);
 
-				// Setting the name of course.
-				firstcourse.appendChild(XMLTools
-						.setTextValue(doc, "name", name));
+				// Save it to file.
+				return XMLTools.saveFile(doc, userfile);
 
-				// Setting the id of course.
-				firstcourse.appendChild(XMLTools.setTextValue(doc, "id", id));
-
-				// Setting the state of course.
-				firstcourse.appendChild(XMLTools.setTextValue(doc, "state",
-						ACTIVE + ""));
-
-				// Setting the group.
-				firstcourse.appendChild(XMLTools
-						.setTextValue(doc, "group", " "));
-
-				// Attach it all back to courses-element.
-				coursesElement.appendChild(firstcourse);
 			}
+			// The first course to add, so just going to edit existing one.
+
+			// Setting the name of course.
+			firstcourse.appendChild(XMLTools.setTextValue(doc, "name", name));
+
+			// Setting the id of course.
+			firstcourse.appendChild(XMLTools.setTextValue(doc, "id", id));
+
+			// Attach it all back to courses-element.
+			coursesElement.appendChild(firstcourse);
 
 			// Attach it all back to document.
 			doc.getDocumentElement().appendChild(coursesElement);
 
 			// Save it to file.
-			return XMLTools.saveFile(doc, userfile);
+			if (XMLTools.saveFile(doc, userfile)) {
+				if (changeState(id, ACTIVE)) {
+					return changeGroup(id, "");
+				}
+			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			// These should never happen.
 		}
@@ -151,21 +148,16 @@ public class UserCourseHandler {
 			// Parse file to document.
 			Document doc = XMLTools.parse(userfile);
 
-			// Get the root courses-element.
-			Element coursesElement = XMLTools.getElement(doc, "courses");
-
 			// Get list of courses and loop through them.
-			NodeList courseList = coursesElement.getElementsByTagName("course");
-			for (int i = 0; i < courseList.getLength(); i++) {
+			for (Element e : XMLTools.getElements(doc, "course")) {
 
 				// Check to see if current element is the correct one.
-				Element courseElement = (Element) courseList.item(i);
-				if (XMLTools.getTagValue("id", courseElement).equals(id)) {
+				if (XMLTools.getTagValue("id", e).equals(id)) {
 					// Return current course's status.
 					try {
-					return Integer.parseInt(XMLTools.getTagValue("state",
-							courseElement));
-					} catch (NumberFormatException e) {
+						return Integer.parseInt(XMLTools
+								.getTagValue("state", e));
+					} catch (NumberFormatException ex) {
 						// In case there is a problem with getting status.
 						return 0;
 					}
@@ -192,26 +184,19 @@ public class UserCourseHandler {
 			// Parse file to document.
 			Document doc = XMLTools.parse(userfile);
 
-			// Get the courses-element to be examined/edited.
-			Element coursesElement = XMLTools.getElement(doc, "courses");
-
 			// Get a list of courses and loop through them.
-			NodeList courseList = coursesElement.getElementsByTagName("course");
-			for (int i = 0; i < courseList.getLength(); i++) {
+			for (Element e : XMLTools.getElements(doc, "course")) {
 
 				// Get the current element and check if it's the right one.
-				Element courseElement = (Element) courseList.item(i);
-				if (XMLTools.getTagValue("id", courseElement).equals(id)) {
+				if (XMLTools.getTagValue("id", e).equals(id)) {
 
 					// Change the status.
-					courseElement.appendChild(XMLTools.setTextValue(
-							courseElement, "state", state + ""));
+					e.appendChild(XMLTools.setTextValue(e, "state", state + ""));
 
-					// Attach it to courses-element.
-					coursesElement.appendChild(courseElement);
-
-					// Attach it all back to document.
-					doc.getDocumentElement().appendChild(coursesElement);
+					// Attach it back to document.
+					Element courses = XMLTools.getElement(doc, "courses");
+					courses.appendChild(e);
+					doc.getDocumentElement().appendChild(courses);
 
 					// Save it to file.
 					return XMLTools.saveFile(doc, userfile);
@@ -271,26 +256,19 @@ public class UserCourseHandler {
 			// Parse file to document.
 			Document doc = XMLTools.parse(userfile);
 
-			// Get the element to be examined/edited.
-			Element coursesElement = XMLTools.getElement(doc, "courses");
-
 			// Get a list of courses and loop through it.
-			NodeList courseList = coursesElement.getElementsByTagName("course");
-			for (int i = 0; i < courseList.getLength(); i++) {
+			for (Element e : XMLTools.getElements(doc, "course")) {
 
 				// Check if current element is the correct one.
-				Element courseElement = (Element) courseList.item(i);
-				if (XMLTools.getTagValue("id", courseElement).equals(id)) {
+				if (XMLTools.getTagValue("id", e).equals(id)) {
 
 					// Change the group
-					courseElement.appendChild(XMLTools.setTextValue(
-							courseElement, "group", group));
-
-					// Attach it to courses-element
-					coursesElement.appendChild(courseElement);
+					e.appendChild(XMLTools.setTextValue(e, "group", group));
 
 					// Attach it all back to document.
-					doc.getDocumentElement().appendChild(coursesElement);
+					Element courses = XMLTools.getElement(doc, "courses");
+					courses.appendChild(e);
+					doc.getDocumentElement().appendChild(courses);
 
 					// Save it to file.
 					return XMLTools.saveFile(doc, userfile);
@@ -318,15 +296,15 @@ public class UserCourseHandler {
 			Element coursesElement = XMLTools.getElement(doc, "courses");
 
 			// Get the list of courses.
-			NodeList courseList = coursesElement.getElementsByTagName("course");
-			if (courseList.getLength() == 1) {
+			List<Element> courseList = XMLTools.getElements(doc, "course");
+			if (courseList.size() == 1) {
 				/*
 				 * This is the last course to be deleted, so just going to empty
 				 * it's model.
 				 */
 
 				// Get the course-element to be edited.
-				Element courseElement = (Element) courseList.item(0);
+				Element courseElement = courseList.get(0);
 
 				// Set name to empty.
 				courseElement.appendChild(XMLTools
@@ -351,14 +329,13 @@ public class UserCourseHandler {
 				 * This wasn't the last course to be removed, so going to loop
 				 * through them to find the correct one.
 				 */
-				loop: for (int i = 0; i < courseList.getLength(); i++) {
+				loop: for (Element e : courseList) {
 
 					// Check if current element is the correct one.
-					Element courseElement = (Element) courseList.item(i);
-					if (XMLTools.getTagValue("id", courseElement).equals(id)) {
+					if (XMLTools.getTagValue("id", e).equals(id)) {
 
 						// Remove the course and end loop.
-						coursesElement.removeChild(courseElement);
+						coursesElement.removeChild(e);
 						break loop;
 					}
 				}
@@ -388,24 +365,19 @@ public class UserCourseHandler {
 			// Parse file to document.
 			Document doc = XMLTools.parse(userfile);
 
-			// Get the element to be examined.
-			Element coursesElement = XMLTools.getElement(doc, "courses");
-
 			// Get a list of courses and loop through it.
-			NodeList courseList = coursesElement.getElementsByTagName("course");
-			for (int i = 0; i < courseList.getLength(); i++) {
+			for (Element e : XMLTools.getElements(doc, "course")) {
 
 				// Create the course-object and get the current element.
-				Element courseElement = (Element) courseList.item(i);
 				NCourse c = (NCourse) NElementFactory
 						.createNElement(NElementType.COURSE);
 
 				// Set the course's information.
-				c.setName(XMLTools.getTagValue("name", courseElement));
-				c.setId(XMLTools.getTagValue("id", courseElement));
-				String state = XMLTools.getTagValue("state", courseElement);
+				c.setName(XMLTools.getTagValue("name", e));
+				c.setId(XMLTools.getTagValue("id", e));
+				String state = XMLTools.getTagValue("state", e);
 				c.setState(Integer.parseInt(state.equals("") ? "0" : state));
-				c.setGroup(XMLTools.getTagValue("group", courseElement));
+				c.setGroup(XMLTools.getTagValue("group", e));
 
 				// Add it to the list to be returned.
 				courses.add(c);
