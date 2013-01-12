@@ -3,7 +3,7 @@
  * small overall classes.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.1
  */
 package spas;

@@ -16,7 +16,7 @@ import spas.nhandling.nelements.NElement;
  * Prints out departments in <code>option</code>-tags.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see NReader
  *

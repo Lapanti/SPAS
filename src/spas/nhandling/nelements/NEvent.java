@@ -7,7 +7,7 @@ import java.util.Calendar;
  * about their duration etc.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.1
  * 
  */

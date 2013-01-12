@@ -1,20 +1,25 @@
 package spas.nhandling.nelements;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 /**
  * Course-type NElement. This class exists because SPAS has use for more
  * information considering courses than other NElements.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.1
  * 
  */
 public class NCourse extends NElement {
 	private String credits = "";
-	private String period = "";
+	private List<String> periods = new ArrayList<String>();
 	private String content = "";
 	private String group = "";
-	private int state = 0;
+	private String execperiod = "";
+	private int execyear = Calendar.getInstance().get(Calendar.YEAR);
 
 	/**
 	 * Basic setter for course's credits.
@@ -39,21 +44,23 @@ public class NCourse extends NElement {
 	/**
 	 * Setter for course's period(s).
 	 * 
-	 * @param periods
+	 * @param period
 	 *            The period(s) for course.
 	 */
-	public void setPeriod(String periods) {
-		period = periods;
+	public void setPeriods(String period) {
+		String[] pds = period.split(", ");
+		for (String p : pds) {
+			periods.add(p);
+		}
 	}
 
 	/**
 	 * Getter for course's period(s).
 	 * 
-	 * @return The period(s) for course, or an empty String (not
-	 *         <code>null</code>), if they don't exist.
+	 * @return The period(s) for course, or an empty list, if they don't exist.
 	 */
-	public String getPeriod() {
-		return period;
+	public List<String> getPeriods() {
+		return periods;
 	}
 
 	/**
@@ -99,48 +106,46 @@ public class NCourse extends NElement {
 	}
 
 	/**
-	 * Setter for course's state. Only used with logged users.
+	 * Basic setter for user's period for completing course.
 	 * 
-	 * @param status
-	 *            State for Course.
-	 * @see spas.usercontrol.UserCourseHandler#ACTIVE
-	 * @see spas.usercontrol.UserCourseHandler#NONACTIVE
-	 * @see spas.usercontrol.UserCourseHandler#COMPLETED
+	 * @param period
+	 *            The period in which user will complete course.
 	 */
-	public void setState(int status) {
-		state = status;
+	public void setExecperiod(String period) {
+		execperiod = period;
 	}
 
 	/**
-	 * Getter for course's state. Only used with logged users.
+	 * Basic getter for user's period for completing course.
 	 * 
-	 * @return The state for course, or 0, if it doesn't exist.
-	 * @see spas.usercontrol.UserCourseHandler#ACTIVE
-	 * @see spas.usercontrol.UserCourseHandler#NONACTIVE
-	 * @see spas.usercontrol.UserCourseHandler#COMPLETED
+	 * @return The period in which user will complete course.
 	 */
-	public int getState() {
-		return state;
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		boolean result = false;
-		// First checking to see if other is course.
-		if (other instanceof NCourse) {
-			String thisid = getId();
-			String otherid = ((NCourse) other).getId();
-			// Don't want to compare courses which don't have an id.
-			if (!thisid.equals("") && !otherid.equals("")) {
-				result = thisid.equals(otherid);
-			}
+	public String getExecperiod() {
+		if (execperiod != null) {
+			return execperiod;
 		}
-		return result;
+		if (periods.size() > 0) {
+			return periods.get(0);
+		}
+		return "";
 	}
 
-	@Override
-	public int hashCode() {
-		// Making sure it doesn't equal with String's hashCode().
-		return (47 * (47 + getId().hashCode()));
+	/**
+	 * Basic setter for the year in which user will complete course.
+	 * 
+	 * @param year
+	 *            The year in which user will complete course.
+	 */
+	public void setExecyear(int year) {
+		execyear = year;
+	}
+
+	/**
+	 * Basic getter for the year in which user will complete course.
+	 * 
+	 * @return The year in which user will complete course.
+	 */
+	public int getExecyear() {
+		return execyear;
 	}
 }

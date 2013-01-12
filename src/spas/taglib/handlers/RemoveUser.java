@@ -15,7 +15,7 @@ import spas.usercontrol.UserHandler;
  * front page, otherwise prints accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see UserHandler
  * 

@@ -1,14 +1,16 @@
 package spas.usercontrol;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import spas.nhandling.NReader;
-import spas.nhandling.nelements.NCourse;
-import spas.nhandling.nelements.NEvent;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
 import net.fortuna.ical4j.model.Calendar;
@@ -30,12 +32,15 @@ import net.fortuna.ical4j.model.property.RRule;
 import net.fortuna.ical4j.model.property.Transp;
 import net.fortuna.ical4j.model.property.Version;
 import net.fortuna.ical4j.util.UidGenerator;
+import spas.nhandling.NReader;
+import spas.nhandling.nelements.NCourse;
+import spas.nhandling.nelements.NEvent;
 
 /**
  * Class for creating an iCalendar representation of user's courses' events.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.2
  * 
  */
@@ -86,55 +91,68 @@ public class CalendarCreator {
 			ug = new UidGenerator(Long.toHexString(Double.doubleToLongBits(Math
 					.random())));
 
+			// Get current period and current year.
+			String currentperiod = getCurrentPeriod();
+			int currentyear = java.util.Calendar.getInstance().get(
+					java.util.Calendar.YEAR);
+
 			// Get user's courses and loop through them all.
 			List<NCourse> courses = handler.getCourses();
 			for (NCourse c : courses) {
-				if (handler.getState(c.getId()) == 1) {
+				// In case of a course extending through two periods.
+				for (String period : c.getExecperiod().split(" - ")) {
+					// Make sure course is planned for current period and year.
+					if (period.equals(currentperiod)
+							&& c.getExecyear() == currentyear) {
 
-					// Get group for course.
-					String group = handler.getGroup(c.getId());
+						// Get group for course.
+						String group = handler.getGroup(c.getId());
 
-					// Create list into add all the VEvents for further editing.
-					List<VEvent> vevents = new ArrayList<VEvent>();
+						// Create list into add all the VEvents for further
+						// editing.
+						List<VEvent> vevents = new ArrayList<VEvent>();
 
-					// Get lectures for course and loop through them all.
-					List<NEvent> lectures = nreader.getCourseLectures(c);
-					for (NEvent event : lectures) {
-						vevents.add(createLecture(event));
-					}
+						// Get lectures for course and loop through them all.
+						List<NEvent> lectures = nreader.getCourseLectures(c);
+						for (NEvent event : lectures) {
+							vevents.add(createLecture(event));
+						}
 
-					// Get exercises for course and loop through them all.
-					List<NEvent> exercises = nreader.getCourseExercises(c);
-					for (NEvent event : exercises) {
-						// Make sure exercises of a wrong group aren't added.
-						if (group.equals("")
-								|| (!group.equals("") && group.equals(event
-										.getGroup())))
-							vevents.add(createExercise(event));
-					}
+						// Get exercises for course and loop through them all.
+						List<NEvent> exercises = nreader.getCourseExercises(c);
+						for (NEvent event : exercises) {
+							// Make sure exercises of a wrong group aren't
+							// added.
+							if (group.equals("")
+									|| (!group.equals("") && group.equals(event
+											.getGroup())))
+								vevents.add(createExercise(event));
+						}
 
-					// Get assignments for course and loop through them all.
-					List<NEvent> assignments = nreader.getCourseAssignments(c);
-					for (NEvent event : assignments) {
-						vevents.add(createAssignment(event));
-					}
+						// Get assignments for course and loop through them all.
+						List<NEvent> assignments = nreader
+								.getCourseAssignments(c);
+						for (NEvent event : assignments) {
+							vevents.add(createAssignment(event));
+						}
 
-					// Get events for course and loop through them all.
-					List<NEvent> events = nreader.getCourseEvents(c);
-					for (NEvent event : events) {
-						vevents.add(createEvent(event));
-					}
+						// Get events for course and loop through them all.
+						List<NEvent> events = nreader.getCourseEvents(c);
+						for (NEvent event : events) {
+							vevents.add(createEvent(event));
+						}
 
-					// Loop through VEvents.
-					for (VEvent vevent : vevents) {
-						// Add basic properties to VEvent.
-						vevent.getProperties().add(tz.getTimeZoneId());
-						vevent.getProperties().add(transp);
-						vevent.getProperties().add(ug.generateUid());
-						vevent.getProperties().add(new Organizer());
+						// Loop through VEvents.
+						for (VEvent vevent : vevents) {
+							// Add basic properties to VEvent.
+							vevent.getProperties().add(tz.getTimeZoneId());
+							vevent.getProperties().add(transp);
+							vevent.getProperties().add(ug.generateUid());
+							vevent.getProperties().add(new Organizer());
 
-						// Add VEvent to calendar.
-						calendar.getComponents().add(vevent);
+							// Add VEvent to calendar.
+							calendar.getComponents().add(vevent);
+						}
 					}
 				}
 			}
@@ -262,5 +280,142 @@ public class CalendarCreator {
 		vas.getProperties().add(desc);
 
 		return vas;
+	}
+
+	/**
+	 * Parses current period from Aalto University's website.
+	 * 
+	 * @return Current period. (Roman numeral 1-4).
+	 */
+	private static String getCurrentPeriod() {
+		try {
+			// Try to connect to Aalto-webpage.
+			URL toconnect = new URL(
+					"https://into.aalto.fi/display/fimastersci/"
+							+ "Opetusperiodit+ja+arviointijaksot");
+			URLConnection yc = toconnect.openConnection();
+			BufferedReader in = new BufferedReader(new InputStreamReader(
+					yc.getInputStream()));
+
+			// Create formatter and current time.
+			SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+			java.util.Calendar currentdate = java.util.Calendar.getInstance();
+			currentdate.setTimeZone(java.util.TimeZone
+					.getTimeZone("Europe/Helsinki"));
+
+			// Create calendar for period.
+			java.util.Calendar perioddate = (java.util.Calendar) currentdate
+					.clone();
+
+			// Create needed variables.
+			String inputLine;
+			boolean readnext = false;
+			int period = 0;
+
+			// Start reading webpage.
+			while ((inputLine = in.readLine()) != null) {
+				// In case next line should be read (it contains information
+				// about period).
+				if (readnext) {
+					// This is to keep track of which period is the current one
+					// being read.
+					period++;
+
+					// Get the part of line that includes period's ending date.
+					int start = inputLine.indexOf("&#8211;") + 10;
+					int end = inputLine.indexOf("</font>");
+					String date = inputLine.substring(start, end);
+					try {
+						// Parse period's ending date into a calendar.
+						perioddate.setTime(formatter.parse(date));
+
+						// Compare current date with parsed period's ending
+						// date.
+						if (compare(currentdate, perioddate)) {
+
+							// Return current period.
+							if (period == 2) {
+								return "II";
+							} else if (period == 3) {
+								return "III";
+							} else if (period == 4) {
+								return "IV";
+							} else {
+								return "I";
+							}
+						}
+					} catch (ParseException e) {
+						// This shouldn't happen.
+					}
+				} // end of if-clause.
+
+				// In case next line contains dates for period.
+				if (inputLine.contains(" periodi")) {
+					readnext = true;
+				} else {
+					readnext = false;
+				}
+			} // end of while-loop;
+
+			// Close connection.
+			in.close();
+		} catch (IOException e) {
+			// This should never happen.
+		}
+
+		// Return period 1.
+		return "I";
+	}
+
+	/**
+	 * Compares current date and given parsed date and concludes if given
+	 * enddate is of current period.
+	 * 
+	 * @param current
+	 *            Current date.
+	 * @param parsed
+	 *            Parsed period's ending date.
+	 * @return <code>true</code>, if parsed period is the current one.
+	 */
+	private static boolean compare(java.util.Calendar current,
+			java.util.Calendar parsed) {
+		// Calculate the difference in years.
+		int yeardif = current.get(java.util.Calendar.YEAR)
+				- parsed.get(java.util.Calendar.YEAR);
+
+		// If period is in the past or far future (more than 1 year away),
+		// false.
+		if (yeardif > 0 || yeardif < -1) {
+			return false;
+		}
+
+		// Calculate the difference in months.
+		int monthdif = current.get(java.util.Calendar.MONTH)
+				- parsed.get(java.util.Calendar.MONTH);
+
+		// If period is in the next year and monthdifference is not big enough
+		// (current is december and period is january for example), false.
+		if (yeardif == -1 && monthdif < 9) {
+			return false;
+		}
+
+		// If period and current year are the same, but period is in the past
+		// (months), false.
+		if (yeardif == 0 && monthdif > 0) {
+			return false;
+		}
+
+		// Calculate the difference in days.
+		int daydif = current.get(java.util.Calendar.DAY_OF_MONTH)
+				- parsed.get(java.util.Calendar.DAY_OF_MONTH);
+
+		// If current year and month are the same, but period's ending day is in
+		// the past, false.
+		if (yeardif == 0 && monthdif == 0 && daydif > 0) {
+			return false;
+		}
+
+		// All checks passed, given period is current one.
+		return true;
 	}
 }

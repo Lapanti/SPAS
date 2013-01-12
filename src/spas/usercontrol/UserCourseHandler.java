@@ -14,14 +14,16 @@ import org.xml.sax.SAXException;
 
 import spas.XMLTools;
 import spas.nhandling.nelements.NCourse;
+import spas.nhandling.nelements.NCourseComparator;
 import spas.nhandling.nelements.NElementFactory;
 import spas.nhandling.nelements.NElementType;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Handles the course-saving and editing aspect of user database.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.2
  * 
  */
@@ -30,18 +32,6 @@ public class UserCourseHandler {
 	 * The file containing user's file.
 	 */
 	File userfile;
-	/**
-	 * Status for active courses.
-	 */
-	public static final int ACTIVE = 1;
-	/**
-	 * Status for nonactive courses.
-	 */
-	public static final int NONACTIVE = 2;
-	/**
-	 * Status for completed courses.
-	 */
-	public static final int COMPLETED = 3;
 
 	/**
 	 * Constructor for a new UserCourseHandler. Path must be working.
@@ -56,17 +46,21 @@ public class UserCourseHandler {
 	/**
 	 * Adds a course to user's active courses.
 	 * 
-	 * @param name
-	 *            Course's name.
-	 * @param id
-	 *            Course's id.
+	 * @param c
+	 *            Course to be added.
 	 * @return <code>true</code>, if and only if, adding was successful.
 	 */
-	public boolean addCourse(String name, String id) {
+	public boolean addCourse(NCourse c) {
+		String id = c.getId();
 		// Make sure it isn't already added.
 		if (containsCourse(id)) {
 			return false;
 		}
+		// Get information from course.
+		String name = c.getName();
+		String credits = c.getCredits();
+		String period = c.getExecperiod();
+		int year = c.getExecyear();
 		try {
 			// Parse file to document.
 			Document doc = XMLTools.parse(userfile);
@@ -91,13 +85,9 @@ public class UserCourseHandler {
 				courseElement
 						.appendChild(XMLTools.createElement(doc, "id", id));
 
-				// Create the state element.
-				courseElement.appendChild(XMLTools.createElement(doc, "state",
-						ACTIVE + ""));
-
-				// Create the group element.
-				courseElement.appendChild(XMLTools.createElement(doc, "group",
-						" "));
+				// Create the credit element.
+				courseElement.appendChild(XMLTools.createElement(doc,
+						"credits", credits));
 
 				// Attach it all back to courses-element.
 				coursesElement.appendChild(courseElement);
@@ -106,7 +96,11 @@ public class UserCourseHandler {
 				doc.getDocumentElement().appendChild(coursesElement);
 
 				// Save it to file.
-				return XMLTools.saveFile(doc, userfile);
+				if (XMLTools.saveFile(doc, userfile)) {
+					if (changeExec(id, year, period)) {
+						return changeGroup(id, "");
+					}
+				}
 
 			}
 			// The first course to add, so just going to edit existing one.
@@ -117,6 +111,10 @@ public class UserCourseHandler {
 			// Setting the id of course.
 			firstcourse.appendChild(XMLTools.setTextValue(doc, "id", id));
 
+			// Setting the credits for course.
+			firstcourse.appendChild(XMLTools.setTextValue(doc, "credits",
+					credits));
+
 			// Attach it all back to courses-element.
 			coursesElement.appendChild(firstcourse);
 
@@ -125,7 +123,7 @@ public class UserCourseHandler {
 
 			// Save it to file.
 			if (XMLTools.saveFile(doc, userfile)) {
-				if (changeState(id, ACTIVE)) {
+				if (changeExec(id, year, period)) {
 					return changeGroup(id, "");
 				}
 			}
@@ -135,15 +133,7 @@ public class UserCourseHandler {
 		return false;
 	}
 
-	/**
-	 * Get the status of a course. If there was no error it will return one of
-	 * these: {@link #ACTIVE}, {@link #NONACTIVE} or {@link #COMPLETED}.
-	 * 
-	 * @param id
-	 *            The course's id.
-	 * @return The course's status, or <code>0</code>, if somethin went wrong.
-	 */
-	public int getState(String id) {
+	public int getExecyear(String id) {
 		try {
 			// Parse file to document.
 			Document doc = XMLTools.parse(userfile);
@@ -155,8 +145,8 @@ public class UserCourseHandler {
 				if (XMLTools.getTagValue("id", e).equals(id)) {
 					// Return current course's status.
 					try {
-						return Integer.parseInt(XMLTools
-								.getTagValue("state", e));
+						return Integer
+								.parseInt(XMLTools.getTagValue("year", e));
 					} catch (NumberFormatException ex) {
 						// In case there is a problem with getting status.
 						return 0;
@@ -169,31 +159,48 @@ public class UserCourseHandler {
 		return 0;
 	}
 
-	/**
-	 * Change the status of a course. Use {@link #ACTIVE}, {@link #NONACTIVE} or
-	 * {@link #COMPLETED} to change the status.
-	 * 
-	 * @param id
-	 *            The course's id.
-	 * @param state
-	 *            The new status for course.
-	 * @return <code>true</code>, if and only if, nothing went wrong.
-	 */
-	public boolean changeState(String id, int state) {
+	public String getExecperiod(String id) {
 		try {
 			// Parse file to document.
 			Document doc = XMLTools.parse(userfile);
 
+			// Get the element to be examined.
+			Element coursesElement = XMLTools.getElement(doc, "courses");
+
 			// Get a list of courses and loop through them.
+			NodeList courseList = coursesElement.getElementsByTagName("course");
+			for (int i = 0; i < courseList.getLength(); i++) {
+
+				// Check to see if current course is the correct one.
+				Element courseElement = (Element) courseList.item(i);
+				if (XMLTools.getTagValue("id", courseElement).equals(id)) {
+
+					// Return it's value.
+					return XMLTools.getTagValue("period", courseElement);
+				}
+			}
+		} catch (ParserConfigurationException | SAXException | IOException e) {
+			// These should never happen.
+		}
+		return "";
+	}
+
+	public boolean changeExec(String id, int year, String period) {
+		try {
+			// Parse file.
+			Document doc = XMLTools.parse(userfile);
+
+			// Get list of courses and loop through them.
 			for (Element e : XMLTools.getElements(doc, "course")) {
 
-				// Get the current element and check if it's the right one.
+				// Check to see if current element is the correct one.
 				if (XMLTools.getTagValue("id", e).equals(id)) {
 
-					// Change the status.
-					e.appendChild(XMLTools.setTextValue(e, "state", state + ""));
+					// Insert new values.
+					e.appendChild(XMLTools.setTextValue(e, "period", period));
+					e.appendChild(XMLTools.setTextValue(e, "year", year + ""));
 
-					// Attach it back to document.
+					// Attach it all back to document.
 					Element courses = XMLTools.getElement(doc, "courses");
 					courses.appendChild(e);
 					doc.getDocumentElement().appendChild(courses);
@@ -201,11 +208,11 @@ public class UserCourseHandler {
 					// Save it to file.
 					return XMLTools.saveFile(doc, userfile);
 				}
-			} // end of for-loop.
+			}
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			// These should never happen.
 		}
-		return false;
+		return true;
 	}
 
 	/**
@@ -375,8 +382,13 @@ public class UserCourseHandler {
 				// Set the course's information.
 				c.setName(XMLTools.getTagValue("name", e));
 				c.setId(XMLTools.getTagValue("id", e));
-				String state = XMLTools.getTagValue("state", e);
-				c.setState(Integer.parseInt(state.equals("") ? "0" : state));
+				c.setExecperiod(XMLTools.getTagValue("period", e));
+				try {
+					c.setExecyear(Integer.parseInt(XMLTools.getTagValue("year",
+							e)));
+				} catch (NumberFormatException ex) {
+					// In case of error.
+				}
 				c.setGroup(XMLTools.getTagValue("group", e));
 
 				// Add it to the list to be returned.
@@ -386,6 +398,8 @@ public class UserCourseHandler {
 		} catch (ParserConfigurationException | SAXException | IOException e) {
 			// These shouldn't normally happen.
 		}
+		// Sort list before returning it.
+		Collections.sort(courses, new NCourseComparator());
 		return courses;
 	}
 

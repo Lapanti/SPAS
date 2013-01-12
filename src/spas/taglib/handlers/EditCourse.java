@@ -9,15 +9,15 @@ import javax.servlet.jsp.tagext.TagSupport;
 import spas.usercontrol.UserCourseHandler;
 
 /**
- * Handles form for changing group for a course. Prints accordingly.
+ * Handles editing of a course, prints out accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.1
- * @since 1.1
+ * @version 1.2
+ * @since 1.2
  * @see UserCourseHandler
  * 
  */
-public class ChangeCourseGroup extends TagSupport {
+public class EditCourse extends TagSupport {
 
 	@Override
 	public int doStartTag() {
@@ -35,8 +35,28 @@ public class ChangeCourseGroup extends TagSupport {
 				.getServletContext().getRealPath(
 						"/resources/users/" + username + ".xml"));
 
-		// Get given id.
+		// Get id for course to be edited.
 		String id = request.getParameter("changeid");
+
+		// Try to activate the course, and print accordingly.
+		if (handler.changeExec(id,
+				Integer.parseInt(request.getParameter("year")),
+				request.getParameter("period"))) {
+			try {
+				out.println("<p class='success'>Kurssin " + id
+						+ " suoritusaikaa muutettiin onnistuneesti.");
+			} catch (IOException e) {
+				// This should never happen.
+			}
+		} else {
+			try {
+				out.println("<p class='error'>Kurssin " + id
+						+ " suoritusajankohdan muutoksessa kohdattiin ongelma,"
+						+ " yritä myöhemmin uudelleen.");
+			} catch (IOException e) {
+				// This should never happen.
+			}
+		}
 
 		// Try to change group, and print accordingly.
 		if (handler.changeGroup(id, request.getParameter("group"))) {

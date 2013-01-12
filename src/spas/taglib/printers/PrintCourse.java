@@ -1,6 +1,9 @@
 package spas.taglib.printers;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,16 +12,18 @@ import javax.servlet.jsp.tagext.TagSupport;
 
 import spas.nhandling.NReader;
 import spas.nhandling.nelements.NCourse;
+import spas.nhandling.nelements.NEvent;
 import spas.usercontrol.UserCourseHandler;
 
 /**
  * Prints out course given as GET-parameters (name and id). If information was
- * not given, it redirects user to search.jsp, otherwise prints it out in a
+ * not given, it redirects user to welcome.jsp, otherwise prints it out in a
  * table containing information about it. Also adds a remove/add button
- * accordingly and handles it.
+ * accordingly and handles it. Now also adds edit form for course, if it's
+ * added.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * 
  */
@@ -39,7 +44,7 @@ public class PrintCourse extends TagSupport {
 		if (id == null || id.equals("") || name == null || name.equals("")) {
 			try {
 				((HttpServletResponse) pageContext.getResponse())
-						.sendRedirect("search.jsp");
+						.sendRedirect("welcome.jsp");
 			} catch (IOException e) {
 				// This should never happen.
 			}
@@ -65,12 +70,20 @@ public class PrintCourse extends TagSupport {
 											"username") + ".xml"));
 
 			try {
+				// Build periods for course.
+				String periods = "";
+				for (String p : c.getPeriods()) {
+					if (!periods.equals("")) {
+						periods += ", ";
+					}
+					periods += p;
+				}
 				// Print out the information for the course.
 				out.println(c.getId() + ": " + c.getName() + "<br/>");
 				out.println("<table>");
 				out.println("<tr><td>Opintopisteet</td><td>" + c.getCredits()
 						+ "</td></tr>");
-				out.println("<tr><td>Opetusperiodi(t)</td><td>" + c.getPeriod()
+				out.println("<tr><td>Opetusperiodi(t)</td><td>" + periods
 						+ "</td></tr>");
 				out.println("<tr><td>Sisältö</td><td>" + c.getContent()
 						+ "</td></tr>");
@@ -81,8 +94,7 @@ public class PrintCourse extends TagSupport {
 				 * appropriately.
 				 */
 				if (request.getParameter("add") != null) {
-					if (handler.addCourse(request.getParameter("aname"),
-							request.getParameter("aid"))) {
+					if (handler.addCourse(c)) {
 						out.println("<p class='success'>Kurssi lisättiin"
 								+ " onnistuneesti.</p>");
 					} else {
@@ -93,20 +105,44 @@ public class PrintCourse extends TagSupport {
 					}
 				}
 
+				/*
+				 * If user pressed remove, try to remove course and print
+				 * appropriately.
+				 */
+				if (request.getParameter("remove") != null) {
+					if (handler.removeCourse(id)) {
+						out.println("<p class='success'>Kurssi poistettiin "
+								+ "onnistuneesti.</p>");
+					} else {
+						// Removing failed.
+						out.println("<p class='error'>Kurssin poistamisessa "
+								+ "oli ongelma, kokeile myöhemmin "
+								+ "uudelleen.</p>");
+					}
+				}
+
 				// Get the link to the file using this tag..
 				String path = request.getRequestURL() + "?"
 						+ request.getQueryString();
 
 				if (handler.containsCourse(id)) {
-					// Print removing form.
-					out.println("Kurssi on lisättynä.");
+					// Get course from user's file.
+					for (NCourse co : handler.getCourses()) {
+						if (co.getId().equals(id)) {
+							c = co;
+							break;
+						}
+					}
+
+					// Print out editing forms for active course.
+					out.println(getAddedCourse(c, path, handler));
+					out.println("<form action='" + path
+							+ "' method='post' onsubmit='confirmSubmit()'>");
+					out.println("<input type='submit' name='remove' "
+							+ "value='Poista' /></form>");
 				} else {
 					// Print adding form.
 					out.println("<form action='" + path + "' method='post'>");
-					out.println("<input type='hidden' name='aid' value='" + id
-							+ "' />");
-					out.println("<input type='hidden' name='aname' value='"
-							+ name + "' />");
 					out.println("<input type='submit' name='add' "
 							+ "value='Lisää' /></form>");
 				}
@@ -116,5 +152,89 @@ public class PrintCourse extends TagSupport {
 		}
 
 		return SKIP_BODY;
+	}
+
+	/**
+	 * Builds String representation in HTML for an added course's edit form.
+	 * 
+	 * @param c
+	 *            Course to be transformed.
+	 * @param path
+	 *            Path to requested url.
+	 * @param handler
+	 *            Coursehandler for user.
+	 * @return HTML-representation of course.
+	 */
+	private String getAddedCourse(NCourse c, String path,
+			UserCourseHandler handler) {
+		String course = "";
+
+		/*
+		 * Get course's groups and insert them into a set to avoid duplicates.
+		 */
+		List<NEvent> exercises = new NReader().getCourseExercises(c);
+		Set<String> groups = new HashSet<String>();
+		for (NEvent e : exercises) {
+
+			// Make sure exercises actually have groups, before adding.
+			if (!e.getGroup().equals("")) {
+				groups.add(e.getGroup());
+			}
+		}
+		String groupmenu = "";
+		if (groups.size() > 0) {
+			/*
+			 * If course had groups, get chosen and then create a form to pick a
+			 * new group.
+			 */
+			String chosengroup = handler.getGroup(id);
+			groupmenu = "Ryhmä: <select name='group'>"
+					+ "<option value=' '>--</option>";
+
+			// Loop through groups and add them as options.
+			for (String group : groups) {
+				String selected = chosengroup.equals(group) ? "selected" : "";
+				groupmenu += "<option value='" + group + "' " + selected + ">"
+						+ group + "</option>";
+			}
+
+			// Build the rest of the group selection form.
+			groupmenu += "</select><br/>";
+
+		} // end of if-group-size-clause.
+
+		// Get periods and loop through them.
+		String periodmenu = "";
+		List<String> periods = c.getPeriods();
+		// Make sure it isn't empty.
+		if (periods.size() > 0) {
+			periodmenu = "Suoritusperiodi: <select name='period'>";
+			// Loop through periods and add them to menu.
+			for (String period : periods) {
+				String selected = period.equals(c.getExecperiod()) ? "selected"
+						: "";
+				periodmenu += "<option value='" + period + "' " + selected
+						+ ">" + period + "</option>";
+			}
+			periodmenu += "</select><br/>";
+		}
+
+		// Build year-selection menu.
+		int[] years = { 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 };
+		String yearmenu = "Suoritusvuosi: <select name='year'>";
+		// Loop through years and add them to menu.
+		for (int year : years) {
+			String selected = year == c.getExecyear() ? "selected" : "";
+			yearmenu += "<option value='" + year + "' " + selected + ">" + year
+					+ "</option>";
+		}
+		yearmenu += "</select><br />";
+
+		// Add forms for completing and deactivating course.
+		course += "<form action='" + path + "' method='post'><br/>" + groupmenu
+				+ periodmenu + yearmenu + "<input type='submit' name='edit' "
+				+ "value='Siirrä suoritettuihin' /></form>";
+
+		return course;
 	}
 }

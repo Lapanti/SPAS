@@ -21,7 +21,7 @@ import sun.misc.BASE64Encoder;
  * target="_bank">here</a> as a base.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.1
  * 
  */

@@ -13,7 +13,7 @@ import spas.usercontrol.UserHandler;
  * otherwise logs user out and sends user to front page.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @see UserHandler
  */

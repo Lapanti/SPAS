@@ -47,7 +47,7 @@
     	<name>printcourses</name>
     	<tag-class>spas.taglib.printers.PrintCourses</tag-class>
     	<body-content>empty</body-content>
-    	<info>This tag will print out user's courses and forms to edit them.</info>
+    	<info>This tag will print out user's courses to edit them.</info>
     </tag>
     <tag>
     	<name>newpword</name>
@@ -85,42 +85,24 @@
     	<name>printorgs</name>
     	<tag-class>spas.taglib.printers.PrintOrgs</tag-class>
     	<body-content>empty</body-content>
-    	<info>This tag will print out organizations in select tags</info>
+    	<info>This tag will print out organizations in select tags.</info>
     </tag>
     <tag>
     	<name>printdepts</name>
     	<tag-class>spas.taglib.printers.PrintDepts</tag-class>
     	<body-content>empty</body-content>
-    	<info>This tag will print out departments in select tags</info>
+    	<info>This tag will print out departments in select tags.</info>
     </tag>
     <tag>
-    	<name>activatecourse</name>
-    	<tag-class>spas.taglib.handlers.ActivateCourse</tag-class>
+    	<name>editcourse</name>
+    	<tag-class>spas.taglib.handlers.EditCourse</tag-class>
     	<body-content>empty</body-content>
-    	<info>This tag will try to activate course and act accordingly</info>
-    </tag>
-    <tag>
-    	<name>deactivatecourse</name>
-    	<tag-class>spas.taglib.handlers.DeactivateCourse</tag-class>
-    	<body-content>empty</body-content>
-    	<info>This tag will try to deactivate course and act accordingly</info>
-    </tag>
-    <tag>
-    	<name>changecoursegroup</name>
-    	<tag-class>spas.taglib.handlers.ChangeCourseGroup</tag-class>
-    	<body-content>empty</body-content>
-    	<info>This tag will try to change group for course and act accordingly</info>
-    </tag>
-    <tag>
-    	<name>completecourse</name>
-    	<tag-class>spas.taglib.handlers.CompleteCourse</tag-class>
-    	<body-content>empty</body-content>
-    	<info>This tag will try to complete course and act accordingly</info>
+    	<info>This tag will try to edit course-info and act accordingly.</info>
     </tag>
     <tag>
     	<name>removecourse</name>
     	<tag-class>spas.taglib.handlers.RemoveCourse</tag-class>
     	<body-content>empty</body-content>
-    	<info>This tag will try to remove course and act accordingly</info>
+    	<info>This tag will try to remove course and act accordingly.</info>
     </tag>
 </taglib>

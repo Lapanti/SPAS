@@ -14,24 +14,14 @@
 <c:import url="parts/menu.jsp" />
 <div id="content">
 	<br />
-	<br /> Kurssit:
+	<c:when test="${empty param.earlier}">
+		<a href="coursecontrol.jsp?earlier=true">Näytä menneet lukuvuodet.</a>
+	</c:when>
+	<c:otherwise>
+		<a href="coursecontrol.jsp">Älä näytä menneitä lukuvuosia.</a>
+	</c:otherwise>
 	<br />
 	<st:printcourses />
-	<c:if test="${!empty param.activate}">
-		<st:activatecourse/>
-	</c:if>
-	<c:if test="${!empty param.deactivate}">
-		<st:deactivatecourse />
-	</c:if>
-	<c:if test="${!empty param.completed}">
-		<st:completecourse />
-	</c:if>
-	<c:if test="${!empty param.changegroup}">
-		<st:changecoursegroup />
-	</c:if>
-	<c:if test="${!empty param.remove}">
-		<st:removecourse />
-	</c:if>
 </div>
 <c:import url="parts/footer.html" />
 </body>

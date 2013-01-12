@@ -17,7 +17,7 @@ import javax.mail.internet.MimeMessage;
  * Class for making and sending a new password to user's email.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.2
  * 
  */

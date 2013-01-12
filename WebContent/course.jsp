@@ -14,7 +14,9 @@
 	<c:import url="parts/menu.jsp" />
 	<div id="content">
 		<st:printcourse />
-		<br /> <br /> <a href="search.jsp">Takaisin</a>
+		<c:if test="${!empty param.edit}">
+			<st:editcourse />
+		</c:if>
 	</div>
 	<c:import url="parts/footer.html" />
 </body>

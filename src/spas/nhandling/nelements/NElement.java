@@ -8,7 +8,7 @@ package spas.nhandling.nelements;
  * target="_blank">the Noppa API</a>.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.1
  * @see NElementType
  * 

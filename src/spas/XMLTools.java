@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
  * Contains static methods for helping with XML reading and writing.
  * 
  * @author Lauri Lavanti
- * @version 1.0
+ * @version 1.2
  * @since 0.2
  * 
  */

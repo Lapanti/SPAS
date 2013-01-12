@@ -6,7 +6,7 @@ package spas.nhandling.nelements;
  * NElement's own constructor.
  * 
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.1
  * 
  */

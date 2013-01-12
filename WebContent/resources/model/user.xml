@@ -11,8 +11,10 @@
 		<course>
 			<name></name>
 			<id></id>
-			<state></state>
+			<credits></credits>
 			<group> </group>
+			<period></period>
+			<year></year>
 		</course>
 	</courses>
 </user>

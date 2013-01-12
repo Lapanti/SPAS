@@ -18,10 +18,12 @@ import org.xml.sax.SAXException;
 
 import spas.XMLTools;
 import spas.nhandling.nelements.NCourse;
+import spas.nhandling.nelements.NCourseComparator;
 import spas.nhandling.nelements.NElement;
 import spas.nhandling.nelements.NElementFactory;
 import spas.nhandling.nelements.NElementType;
 import spas.nhandling.nelements.NEvent;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Parses XML into NElement objects. Needs InputSource to actually do something.
@@ -31,7 +33,7 @@ import spas.nhandling.nelements.NEvent;
  * 
  * @see NReader
  * @author Lauri Lavanti
- * @version 1.1
+ * @version 1.2
  * @since 0.1
  */
 public class XMLParser {
@@ -170,6 +172,9 @@ public class XMLParser {
 			// Add it to the list.
 			objs.add(course);
 		} // end of for-loop.
+		
+		// Sort list before returning it.
+		Collections.sort(objs, new NCourseComparator());
 		return objs;
 	}
 
@@ -200,7 +205,7 @@ public class XMLParser {
 		course.setCredits(XMLTools.getTagValue("credits", OverviewElement));
 
 		// Getting and setting the periods for the course.
-		course.setPeriod(XMLTools.getTagValue("teaching_period",
+		course.setPeriods(XMLTools.getTagValue("teaching_period",
 				OverviewElement));
 
 		// Getting and setting the content for the course.
