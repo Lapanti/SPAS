@@ -3,12 +3,14 @@ SPAS
 
 School project for showing a weekly calendar view of your courses (at the moment only makes an iCalendar, due to iCalendar-reading softwares are amany).
 
-Current version (1.1) features:<br/>
+Current version (1.2) features:<br/>
 - User login/register system.<br/>
 - Course searching.<br/>
 - Course saving.<br/>
 - Course group selecting.<br/>
-- iCalendar making.
+- Course execution period/year selection.<br/>
+- iCalendar making.<br/>
+- Makes calendar according to current period and chosen courses for that period.<br/>
 
 Technologies it uses:<br/>
 - J2SE
