@@ -172,7 +172,7 @@ public class XMLParser {
 			// Add it to the list.
 			objs.add(course);
 		} // end of for-loop.
-		
+
 		// Sort list before returning it.
 		Collections.sort(objs, new NCourseComparator());
 		return objs;
@@ -202,14 +202,16 @@ public class XMLParser {
 		course.setId(XMLTools.getTagValue("course_id", OverviewElement));
 
 		// Getting and setting the credits for the course.
-		course.setCredits(XMLTools.getTagValue("credits", OverviewElement));
+		course.setCredits(parseHTML(XMLTools.getTagValue("credits",
+				OverviewElement)));
 
 		// Getting and setting the periods for the course.
-		course.setPeriods(XMLTools.getTagValue("teaching_period",
-				OverviewElement));
+		course.setPeriods(parseHTML(XMLTools.getTagValue("teaching_period",
+				OverviewElement)));
 
 		// Getting and setting the content for the course.
-		course.setContent(XMLTools.getTagValue("content", OverviewElement));
+		course.setContent(parseHTML(XMLTools.getTagValue("content",
+				OverviewElement)));
 
 		// Add it to the list.
 		objs.add(course);
@@ -232,11 +234,15 @@ public class XMLParser {
 		Calendar startDate = new GregorianCalendar();
 		startDate.setTimeZone(TimeZone.getTimeZone("Europe/Helsinki"));
 		Calendar endDate = (Calendar) startDate.clone();
-		SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 		// Get the list of lectures and loop through it.
 		for (Element e : XMLTools.getElements(doc, "lecture")) {
 
+			// Copy startdate and enddate to new Calendars.
+			startDate = (Calendar) startDate.clone();
+			endDate = (Calendar) endDate.clone();
+			
 			// Create the NEvent object.
 			NEvent lecture = (NEvent) NElementFactory
 					.createNElement(NElementType.LECTURE);
@@ -287,10 +293,14 @@ public class XMLParser {
 		Calendar startDate = new GregorianCalendar();
 		startDate.setTimeZone(TimeZone.getTimeZone("Europe/Helsinki"));
 		Calendar endDate = (Calendar) startDate.clone();
-		SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 		// Get the list of exercises and loop through it.
 		for (Element e : XMLTools.getElements(doc, "exercise")) {
+
+			// Copy startdate and enddate to new Calendars.
+			startDate = (Calendar) startDate.clone();
+			endDate = (Calendar) endDate.clone();
 
 			// Create the NEvent object.
 			NEvent exercise = (NEvent) NElementFactory
@@ -345,10 +355,13 @@ public class XMLParser {
 		// appropriate String-Date formatter.
 		Calendar dueDate = new GregorianCalendar();
 		dueDate.setTimeZone(TimeZone.getTimeZone("Europe/Helsinki"));
-		SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
 
 		// Get the list of assignments and loop through it.
 		for (Element e : XMLTools.getElements(doc, "assignment")) {
+
+			// Copy duedate to new Calendars.
+			dueDate = (Calendar) dueDate.clone();
 
 			// Create the NEvent object.
 			NEvent assignment = (NEvent) NElementFactory
@@ -387,10 +400,14 @@ public class XMLParser {
 		Calendar startDate = new GregorianCalendar();
 		startDate.setTimeZone(TimeZone.getTimeZone("Europe/Helsinki"));
 		Calendar endDate = (Calendar) startDate.clone();
-		SimpleDateFormat formatter = new SimpleDateFormat("YYYY-MM-dd HH:mm");
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 		// Get the list of events and loop through them.
 		for (Element e : XMLTools.getElements(doc, "event")) {
+
+			// Copy startdate and enddate to new Calendars.
+			startDate = (Calendar) startDate.clone();
+			endDate = (Calendar) endDate.clone();
 
 			// Create the NEvent object.
 			NEvent event = (NEvent) NElementFactory
@@ -410,13 +427,13 @@ public class XMLParser {
 						"start_date", e)
 						+ " "
 						+ XMLTools.getTagValue("start_time", e)));
-				
+
 				// Parse ending datetime.
 				endDate.setTime(formatter.parse(XMLTools.getTagValue(
 						"end_date", e)
 						+ " "
 						+ XMLTools.getTagValue("end_time", e)));
-				
+
 				// Set datetimes to event.
 				event.setStartDate(startDate);
 				event.setEndDate(endDate);
@@ -428,5 +445,24 @@ public class XMLParser {
 			objs.add(event);
 		} // end of for-loop.
 		return objs;
+	}
+
+	/**
+	 * Method to parse html-tags out of text given as a parameter.
+	 * 
+	 * @param html
+	 *            HTML-String to parse.
+	 * @return Given String without HTML-tags.
+	 */
+	private static String parseHTML(String html) {
+		// Continue editing given text as long as it contains a tag.
+		while (html.contains("<") && html.contains(">")) {
+
+			// Parse one tag out of it.
+			html = html.replace(
+					html.substring(html.indexOf("<"), html.indexOf(">") + 1),
+					"");
+		}
+		return html;
 	}
 }

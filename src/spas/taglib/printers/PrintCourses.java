@@ -67,7 +67,7 @@ public class PrintCourses extends TagSupport {
 		for (Integer year : courses.keySet()) {
 			// Make sure past years are only shown in case user wanted them to.
 			if (request.getParameter("earlier") == null) {
-				if (year - 1 < Calendar.getInstance().get(Calendar.YEAR)) {
+				if (year < Calendar.getInstance().get(Calendar.YEAR) -1) {
 					continue;
 				}
 			}
@@ -104,20 +104,27 @@ public class PrintCourses extends TagSupport {
 					}
 				}
 
+				// Get periods.
+				String[] periods = c.getExecperiod().split(" - ");
+				// Because teachers don't have a standard.
+				if (periods.length == 1) {
+					periods = periods[0].split("-");
+				}
+				
 				// Add course to according divs.
-				for (String period : c.getExecperiod().split(" - ")) {
-					if (period.equals("I")) {
-						I += course;
-						crI += credits;
-					} else if (period.equals("II")) {
-						II += course;
-						crII += credits;
-					} else if (period.equals("III")) {
-						III += course;
-						crIII += credits;
-					} else if (period.equals("IV")) {
+				for (String period : periods) {
+					if (period.contains("IV")) {
 						IV += course;
 						crIV += credits;
+					} else if (period.contains("III")) {
+						III += course;
+						crIII += credits;
+					} else if (period.contains("II")) {
+						II += course;
+						crII += credits;
+					} else if (period.contains("I")) {
+						I += course;
+						crI += credits;
 					}
 				}
 			}

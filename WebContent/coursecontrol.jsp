@@ -11,18 +11,21 @@
 <title>SPAS - kurssihallinta</title>
 </head>
 <body>
-<c:import url="parts/menu.jsp" />
-<div id="content">
-	<br />
-	<c:when test="${empty param.earlier}">
-		<a href="coursecontrol.jsp?earlier=true">Näytä menneet lukuvuodet.</a>
-	</c:when>
-	<c:otherwise>
-		<a href="coursecontrol.jsp">Älä näytä menneitä lukuvuosia.</a>
-	</c:otherwise>
-	<br />
-	<st:printcourses />
-</div>
-<c:import url="parts/footer.html" />
+	<c:import url="parts/menu.jsp" />
+	<div id="content">
+		<br />
+		<c:choose>
+			<c:when test="${empty param.earlier}">
+				<a href="coursecontrol.jsp?earlier=true">Näytä menneet
+					lukuvuodet.</a>
+			</c:when>
+			<c:otherwise>
+				<a href="coursecontrol.jsp">Älä näytä menneitä lukuvuosia.</a>
+			</c:otherwise>
+		</c:choose>
+		<br />
+		<st:printcourses />
+	</div>
+	<c:import url="parts/footer.html" />
 </body>
 </html>

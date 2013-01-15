@@ -197,8 +197,10 @@ public class UserCourseHandler {
 				if (XMLTools.getTagValue("id", e).equals(id)) {
 
 					// Insert new values.
-					e.appendChild(XMLTools.setTextValue(e, "period", period));
-					e.appendChild(XMLTools.setTextValue(e, "year", year + ""));
+					e.appendChild(XMLTools.setTextValue(doc, e, "period",
+							period));
+					e.appendChild(XMLTools.setTextValue(doc, e, "year", year
+							+ ""));
 
 					// Attach it all back to document.
 					Element courses = XMLTools.getElement(doc, "courses");
@@ -270,7 +272,7 @@ public class UserCourseHandler {
 				if (XMLTools.getTagValue("id", e).equals(id)) {
 
 					// Change the group
-					e.appendChild(XMLTools.setTextValue(e, "group", group));
+					e.appendChild(XMLTools.setTextValue(doc, e, "group", group));
 
 					// Attach it all back to document.
 					Element courses = XMLTools.getElement(doc, "courses");
@@ -322,10 +324,6 @@ public class UserCourseHandler {
 
 				// Set group to empty.
 				courseElement.appendChild(XMLTools.setTextValue(doc, "group",
-						""));
-
-				// Set state to empty.
-				courseElement.appendChild(XMLTools.setTextValue(doc, "state",
 						""));
 
 				// Attach course to courses-element.
@@ -382,6 +380,7 @@ public class UserCourseHandler {
 				// Set the course's information.
 				c.setName(XMLTools.getTagValue("name", e));
 				c.setId(XMLTools.getTagValue("id", e));
+				c.setCredits(XMLTools.getTagValue("credits", e));
 				c.setExecperiod(XMLTools.getTagValue("period", e));
 				try {
 					c.setExecyear(Integer.parseInt(XMLTools.getTagValue("year",

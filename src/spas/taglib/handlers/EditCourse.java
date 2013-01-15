@@ -36,7 +36,7 @@ public class EditCourse extends TagSupport {
 						"/resources/users/" + username + ".xml"));
 
 		// Get id for course to be edited.
-		String id = request.getParameter("changeid");
+		String id = request.getParameter("id");
 
 		// Try to activate the course, and print accordingly.
 		if (handler.changeExec(id,
@@ -57,21 +57,23 @@ public class EditCourse extends TagSupport {
 				// This should never happen.
 			}
 		}
-
 		// Try to change group, and print accordingly.
-		if (handler.changeGroup(id, request.getParameter("group"))) {
-			try {
-				out.println("<p class='success'>Kurssin " + id
-						+ " ryhmä vaihdettiin onnistuneesti.</p>");
-			} catch (IOException e) {
-				// This should never happen.
-			}
-		} else {
-			try {
-				out.println("<p class='error'>Ryhmän vaihtamisessa "
-						+ "kohdattiin ongelma, yritä myöhemmin uudelleen.");
-			} catch (IOException e) {
-				// This should never happen.
+		String group = request.getParameter("group");
+		if (group != null) {
+			if (handler.changeGroup(id, group)) {
+				try {
+					out.println("<p class='success'>Kurssin " + id
+							+ " ryhmä vaihdettiin onnistuneesti.</p>");
+				} catch (IOException e) {
+					// This should never happen.
+				}
+			} else {
+				try {
+					out.println("<p class='error'>Ryhmän vaihtamisessa "
+							+ "kohdattiin ongelma, yritä myöhemmin uudelleen.");
+				} catch (IOException e) {
+					// This should never happen.
+				}
 			}
 		}
 

@@ -11,14 +11,14 @@
 <body>
 	<c:import url="parts/menu.jsp" />
 	<div id="content">
-
+		Rekisteröidy<br/><br/>
 		<form action="register.jsp" method="post">
-			Käyttäjänimi:<br /> <input type="text" name="username"
-				value="${!empty param.username ? param.username : ''}" /> <br />
-			Sähköposti:<br /> <input type="text" name="email"
-				value="${!empty param.email ? param.email : ''}" /><br />
-			Salasana:<br /> <input type="password" name="pword" /><br />
-			Toista salasana:<br /> <input type="password" name="pword2" /><br />
+			Käyttäjänimi: <input type="text" name="username"
+				value="${!empty param.username ? param.username : ''}" /><br /><br />
+			Sähköposti: <input type="text" name="email"
+				value="${!empty param.email ? param.email : ''}" /><br /><br />
+			Salasana: <input type="password" name="pword" /><br /><br />
+			Toista salasana: <input type="password" name="pword2" /><br /><br />
 			<input type="submit" name="register" value="Rekisteröidy" />
 		</form>
 		<c:if test="${!empty param.register}">

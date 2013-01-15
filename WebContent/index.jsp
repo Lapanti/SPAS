@@ -33,11 +33,14 @@
 	<a href="newpword.jsp">Unohditko salasanasi?</a>
 	<a href="register.jsp">Rekisteröidy.</a>
 	<br />
+	<br /> SPAS on palvelu, jolla Aalto-yliopiston opiskelijat voivat
+	<br /> suunnitella opintojaan (näyttää kuinka monta opintopistettä 
+	<br /> on per periodi) ja generoida lukujärjestyksen nykyiselle periodille.
+	<br />
 	<br />
 	<br /> Tulossa:
 	<br /> Viikkonäkymä.
-	<br /> Kielen vaihtaminen (englanti ja suomi).
-	<br /> Periodi-/vuosikohtainen kurssien suoritus.
+	<br /> Kielivaihtoehdot (suomi, englanti).
 	<br />
 	</div>
 	<c:import url="parts/footer.html" />

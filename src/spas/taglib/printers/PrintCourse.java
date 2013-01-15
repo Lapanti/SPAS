@@ -1,14 +1,16 @@
 package spas.taglib.printers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 import spas.nhandling.NReader;
 import spas.nhandling.nelements.NCourse;
@@ -39,116 +41,110 @@ public class PrintCourse extends TagSupport {
 		// Get given id and name.
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
+		
+		// Get the course.
+		NCourse c = new NReader().getCourseOverview(id, name);
 
-		// If given parameters were null or empty redirect back to search.
-		if (id == null || id.equals("") || name == null || name.equals("")) {
-			try {
-				((HttpServletResponse) pageContext.getResponse())
-						.sendRedirect("welcome.jsp");
-			} catch (IOException e) {
-				// This should never happen.
-			}
-		} else {
-			// Get the course.
-			NCourse c = new NReader().getCourseOverview(id, name);
+		// In case of a new course, add id.
+		if (c.getId().equals("")) {
+			c.setId(id);
+		}
 
-			// In case of a new course, add id.
-			if (c.getId().equals("")) {
-				c.setId(id);
-			}
+		// In case of a new course, add name.
+		if (c.getName().equals("")) {
+			c.setName(name);
+		}
 
-			// In case of a new course, add name.
-			if (c.getName().equals("")) {
-				c.setName(name);
-			}
+		// Create course handler.
+		UserCourseHandler handler = new UserCourseHandler(pageContext
+				.getServletContext().getRealPath(
+						"/resources/users/"
+								+ pageContext.getSession().getAttribute(
+										"username") + ".xml"));
 
-			// Create course handler.
-			UserCourseHandler handler = new UserCourseHandler(pageContext
-					.getServletContext().getRealPath(
-							"/resources/users/"
-									+ pageContext.getSession().getAttribute(
-											"username") + ".xml"));
-
-			try {
-				// Build periods for course.
-				String periods = "";
-				for (String p : c.getPeriods()) {
-					if (!periods.equals("")) {
-						periods += ", ";
-					}
-					periods += p;
+		try {
+			// Build periods for course.
+			String periods = "";
+			for (String p : c.getPeriods()) {
+				if (!periods.equals("")) {
+					periods += ", ";
 				}
-				// Print out the information for the course.
-				out.println(c.getId() + ": " + c.getName() + "<br/>");
-				out.println("<table>");
-				out.println("<tr><td>Opintopisteet</td><td>" + c.getCredits()
-						+ "</td></tr>");
-				out.println("<tr><td>Opetusperiodi(t)</td><td>" + periods
-						+ "</td></tr>");
-				out.println("<tr><td>Sisältö</td><td>" + c.getContent()
-						+ "</td></tr>");
-				out.println("<table><br/><br/><br/>");
+				periods += p;
+			}
+			// Print out the information for the course.
+			out.println(c.getId() + ": " + c.getName() + "<br/>");
+			out.println("<table>");
+			out.println("<tr><td>Opintopisteet</td><td>" + c.getCredits()
+					+ "</td></tr>");
+			out.println("<tr><td>Opetusperiodi(t)</td><td>" + periods
+					+ "</td></tr>");
+			out.println("<tr><td>Sisältö</td><td>" + c.getContent()
+					+ "</td></tr>");
+			out.println("<table><br/><br/><br/>");
 
-				/*
-				 * If user pressed add, try to add course and print
-				 * appropriately.
-				 */
-				if (request.getParameter("add") != null) {
-					if (handler.addCourse(c)) {
-						out.println("<p class='success'>Kurssi lisättiin"
-								+ " onnistuneesti.</p>");
-					} else {
-						// Adding failed.
-						out.println("<p class='error'>Kurssin lisäyksessä "
-								+ "oli ongelma, kokeile myöhemmin "
-								+ "uudelleen.</p>");
-					}
-				}
-
-				/*
-				 * If user pressed remove, try to remove course and print
-				 * appropriately.
-				 */
-				if (request.getParameter("remove") != null) {
-					if (handler.removeCourse(id)) {
-						out.println("<p class='success'>Kurssi poistettiin "
-								+ "onnistuneesti.</p>");
-					} else {
-						// Removing failed.
-						out.println("<p class='error'>Kurssin poistamisessa "
-								+ "oli ongelma, kokeile myöhemmin "
-								+ "uudelleen.</p>");
-					}
-				}
-
-				// Get the link to the file using this tag..
-				String path = request.getRequestURL() + "?"
-						+ request.getQueryString();
-
-				if (handler.containsCourse(id)) {
-					// Get course from user's file.
-					for (NCourse co : handler.getCourses()) {
-						if (co.getId().equals(id)) {
-							c = co;
-							break;
-						}
-					}
-
-					// Print out editing forms for active course.
-					out.println(getAddedCourse(c, path, handler));
-					out.println("<form action='" + path
-							+ "' method='post' onsubmit='confirmSubmit()'>");
-					out.println("<input type='submit' name='remove' "
-							+ "value='Poista' /></form>");
+			/*
+			 * If user pressed add, try to add course and print appropriately.
+			 */
+			if (request.getParameter("add") != null) {
+				if (handler.addCourse(c)) {
+					out.println("<p class='success'>Kurssi lisättiin"
+							+ " onnistuneesti.</p>");
 				} else {
-					// Print adding form.
-					out.println("<form action='" + path + "' method='post'>");
-					out.println("<input type='submit' name='add' "
-							+ "value='Lisää' /></form>");
+					// Adding failed.
+					out.println("<p class='error'>Kurssin lisäyksessä "
+							+ "oli ongelma, kokeile myöhemmin "
+							+ "uudelleen.</p>");
 				}
-			} catch (IOException e) {
-				// This should never happen.
 			}
+
+			/*
+			 * If user pressed remove, try to remove course and print
+			 * appropriately.
+			 */
+			if (request.getParameter("remove") != null) {
+				if (handler.removeCourse(id)) {
+					out.println("<p class='success'>Kurssi poistettiin "
+							+ "onnistuneesti.</p>");
+				} else {
+					// Removing failed.
+					out.println("<p class='error'>Kurssin poistamisessa "
+							+ "oli ongelma, kokeile myöhemmin "
+							+ "uudelleen.</p>");
+				}
+			}
+
+			// Get the link to the file using this tag..
+			String path = request.getRequestURL() + "?"
+					+ request.getQueryString();
+
+			if (handler.containsCourse(id)) {
+				// Get course from user's file.
+				for (NCourse co : handler.getCourses()) {
+					if (co.getId().equals(id)) {
+						// Add periods to new representation of course.
+						for (String period : c.getPeriods()) {
+							co.setPeriods(period);
+						}
+						co.setCredits(c.getCredits());
+						c = co;
+						break;
+					}
+				}
+
+				// Print out editing forms for active course.
+				out.println(getAddedCourse(c, path, handler));
+				out.println("<form action='" + path
+						+ "' method='post' onsubmit='confirmSubmit()'>");
+				out.println("<input type='submit' name='remove' "
+						+ "value='Poista' /></form>");
+			} else {
+				// Print adding form.
+				out.println("<form action='" + path + "' method='post'>");
+				out.println("<input type='submit' name='add' "
+						+ "value='Lisää' /></form>");
+			}
+		} catch (IOException e) {
+			// This should never happen.
 		}
 
 		return SKIP_BODY;
@@ -173,7 +169,7 @@ public class PrintCourse extends TagSupport {
 		 * Get course's groups and insert them into a set to avoid duplicates.
 		 */
 		List<NEvent> exercises = new NReader().getCourseExercises(c);
-		Set<String> groups = new HashSet<String>();
+		Collection<String> groups = new HashSet<String>();
 		for (NEvent e : exercises) {
 
 			// Make sure exercises actually have groups, before adding.
@@ -183,6 +179,8 @@ public class PrintCourse extends TagSupport {
 		}
 		String groupmenu = "";
 		if (groups.size() > 0) {
+			groups = new ArrayList<String>(groups);
+			Collections.sort((List<String>) groups);
 			/*
 			 * If course had groups, get chosen and then create a form to pick a
 			 * new group.
@@ -233,7 +231,7 @@ public class PrintCourse extends TagSupport {
 		// Add forms for completing and deactivating course.
 		course += "<form action='" + path + "' method='post'><br/>" + groupmenu
 				+ periodmenu + yearmenu + "<input type='submit' name='edit' "
-				+ "value='Siirrä suoritettuihin' /></form>";
+				+ "value='Tallenna' /></form>";
 
 		return course;
 	}

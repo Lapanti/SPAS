@@ -9,7 +9,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.fortuna.ical4j.data.CalendarOutputter;
@@ -99,8 +98,26 @@ public class CalendarCreator {
 			// Get user's courses and loop through them all.
 			List<NCourse> courses = handler.getCourses();
 			for (NCourse c : courses) {
-				// In case of a course extending through two periods.
-				for (String period : c.getExecperiod().split(" - ")) {
+
+				// Get periods.
+				String[] periods = c.getExecperiod().split(" - ");
+				// Because teachers don't have a standard.
+				if (periods.length == 1) {
+					periods = periods[0].split("-");
+				}
+
+				for (String period : periods) {
+					// Because teacher's don't have a standard.
+					if (period.contains("IV")) {
+						period = "IV";
+					} else if (period.contains("III")) {
+						period = "III";
+					} else if (period.contains("II")) {
+						period = "II";
+					} else if (period.contains("I")) {
+						period = "I";
+					}
+
 					// Make sure course is planned for current period and year.
 					if (period.equals(currentperiod)
 							&& c.getExecyear() == currentyear) {
@@ -108,14 +125,18 @@ public class CalendarCreator {
 						// Get group for course.
 						String group = handler.getGroup(c.getId());
 
-						// Create list into add all the VEvents for further
-						// editing.
-						List<VEvent> vevents = new ArrayList<VEvent>();
-
 						// Get lectures for course and loop through them all.
 						List<NEvent> lectures = nreader.getCourseLectures(c);
 						for (NEvent event : lectures) {
-							vevents.add(createLecture(event));
+							VEvent vevent = createLecture(event);
+							// Add basic properties to VEvent.
+							vevent.getProperties().add(tz.getTimeZoneId());
+							vevent.getProperties().add(transp);
+							vevent.getProperties().add(ug.generateUid());
+							vevent.getProperties().add(new Organizer());
+
+							// Add VEvent to calendar.
+							calendar.getComponents().add(vevent);
 						}
 
 						// Get exercises for course and loop through them all.
@@ -125,25 +146,38 @@ public class CalendarCreator {
 							// added.
 							if (group.equals("")
 									|| (!group.equals("") && group.equals(event
-											.getGroup())))
-								vevents.add(createExercise(event));
+											.getGroup()))) {
+								VEvent vevent = createExercise(event);
+								// Add basic properties to VEvent.
+								vevent.getProperties().add(tz.getTimeZoneId());
+								vevent.getProperties().add(transp);
+								vevent.getProperties().add(ug.generateUid());
+								vevent.getProperties().add(new Organizer());
+
+								// Add VEvent to calendar.
+								calendar.getComponents().add(vevent);
+							}
 						}
 
 						// Get assignments for course and loop through them all.
 						List<NEvent> assignments = nreader
 								.getCourseAssignments(c);
 						for (NEvent event : assignments) {
-							vevents.add(createAssignment(event));
+							VEvent vevent = createAssignment(event);
+							// Add basic properties to VEvent.
+							vevent.getProperties().add(tz.getTimeZoneId());
+							vevent.getProperties().add(transp);
+							vevent.getProperties().add(ug.generateUid());
+							vevent.getProperties().add(new Organizer());
+
+							// Add VEvent to calendar.
+							calendar.getComponents().add(vevent);
 						}
 
 						// Get events for course and loop through them all.
 						List<NEvent> events = nreader.getCourseEvents(c);
 						for (NEvent event : events) {
-							vevents.add(createEvent(event));
-						}
-
-						// Loop through VEvents.
-						for (VEvent vevent : vevents) {
+							VEvent vevent = createEvent(event);
 							// Add basic properties to VEvent.
 							vevent.getProperties().add(tz.getTimeZoneId());
 							vevent.getProperties().add(transp);

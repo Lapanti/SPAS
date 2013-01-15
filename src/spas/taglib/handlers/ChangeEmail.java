@@ -31,8 +31,8 @@ public class ChangeEmail extends TagSupport {
 		// Get parameters.
 		String username = (String) pageContext.getSession().getAttribute(
 				"username");
-		String email = request.getParameter("email");
-		String email2 = request.getParameter("email2");
+		String email = request.getParameter("newmail");
+		String email2 = request.getParameter("newmail2");
 		String pword = request.getParameter("epword");
 
 		try {

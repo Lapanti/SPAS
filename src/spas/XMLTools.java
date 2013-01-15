@@ -8,6 +8,7 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Result;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -116,6 +117,8 @@ public class XMLTools {
 	/**
 	 * Change/set the Text of given node.
 	 * 
+	 * @param doc
+	 *            The document in which this all is found.
 	 * @param element
 	 *            Element in which node is found.
 	 * @param node
@@ -124,8 +127,14 @@ public class XMLTools {
 	 *            Value to be inserted.
 	 * @return Given node with given value.
 	 */
-	public static Node setTextValue(Element element, String node, String text) {
-		return setTextValue(element.getElementsByTagName(node).item(0), text);
+	public static Node setTextValue(Document doc, Element element, String node,
+			String text) {
+		// Make sure child node is not null before editing.
+		Node nnode = element.getElementsByTagName(node).item(0);
+		if (nnode == null) {
+			nnode = doc.createElement(node);
+		}
+		return setTextValue(nnode, text);
 	}
 
 	/**
@@ -153,7 +162,13 @@ public class XMLTools {
 	 * @return Node with given tagname (item 0).
 	 */
 	public static Node getNode(Document doc, String name) {
-		return doc.getElementsByTagName(name).item(0);
+		Node node = doc.getElementsByTagName(name).item(0);
+
+		// Make sure node actually exists.
+		if (node == null) {
+			node = doc.createElement(name);
+		}
+		return node;
 	}
 
 	/**
@@ -208,6 +223,8 @@ public class XMLTools {
 			// Save document to file.
 			Transformer transformer = TransformerFactory.newInstance()
 					.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 			Result output = new StreamResult(file);
 			Source input = new DOMSource(doc);
 			transformer.transform(input, output);
