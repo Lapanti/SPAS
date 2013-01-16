@@ -7,15 +7,30 @@ import java.util.Calendar;
  * about their duration etc.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  * 
  */
 public class NEvent extends NElement {
+	/**
+	 * The location of NEvent.
+	 */
 	private String location = "";
+	/**
+	 * A more accurate description of NEvent.
+	 */
 	private String description = "";
+	/**
+	 * Starting date and time for NEvent.
+	 */
 	private Calendar startdate = null;
+	/**
+	 * Ending date and time for NEvent.
+	 */
 	private Calendar enddate = null;
+	/**
+	 * NEvent's group. Only used with exercises.
+	 */
 	private String group = "";
 
 	/**
@@ -103,7 +118,7 @@ public class NEvent extends NElement {
 	}
 
 	/**
-	 * Setter for event's group.
+	 * Setter for event's group. Only used with exercises.
 	 * 
 	 * @param egroup
 	 *            The group for event.
@@ -113,7 +128,7 @@ public class NEvent extends NElement {
 	}
 
 	/**
-	 * Getter for event's group.
+	 * Getter for event's group. Only used with exercises.
 	 * 
 	 * @return Group for event, or an empty String (not <code>null</code>), if
 	 *         it doesn't exist.

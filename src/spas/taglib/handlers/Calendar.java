@@ -12,7 +12,7 @@ import spas.usercontrol.CalendarCreator;
  * Tries to save/update user's iCalendar file. Prints out accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
  * @see CalendarCreator
  * 

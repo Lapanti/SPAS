@@ -12,7 +12,7 @@ import spas.usercontrol.UserCourseHandler;
  * Handles editing of a course, prints out accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.2
  * @see UserCourseHandler
  * 
@@ -59,7 +59,7 @@ public class EditCourse extends TagSupport {
 		}
 		// Try to change group, and print accordingly.
 		String group = request.getParameter("group");
-		if (group != null) {
+		if (group != null && !group.equals(handler.getGroup(id))) {
 			if (handler.changeGroup(id, group)) {
 				try {
 					out.println("<p class='success'>Kurssin " + id

@@ -22,7 +22,7 @@ import spas.nhandling.nelements.NEvent;
  * {@link XMLParser#parseFile(InputSource) XMLParser}.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  * 
  */
@@ -41,7 +41,7 @@ public class NReader {
 	/**
 	 * Get the organizations of Aalto University.
 	 * 
-	 * @return List of organizations, or an empty list, if there was a problem
+	 * @return List of organizations, or an empty list if there was a problem
 	 *         with the connection.
 	 */
 	@SuppressWarnings("unchecked")
@@ -63,7 +63,7 @@ public class NReader {
 	 *            The organization, from which the departments are from (can be
 	 *            <code>null</code>, in which case it will return all
 	 *            departments).
-	 * @return List of departments, or an empty list, if there was a problem
+	 * @return List of departments, or an empty list if there was a problem
 	 *         with the connection.
 	 */
 	@SuppressWarnings("unchecked")
@@ -90,13 +90,12 @@ public class NReader {
 	 *            The department, from which to search.
 	 * @param search
 	 *            The keyword for search.
-	 * @return List of courses, or an empty list, if there was a problem with
+	 * @return List of courses, or an empty list if there was a problem with
 	 *         the connection.
 	 */
 	@SuppressWarnings("unchecked")
 	public List<NCourse> getCourses(String organizationID, String departmentID,
 			String search) {
-		List<NCourse> finalList = new ArrayList<NCourse>();
 		try {
 			/*
 			 * Convert the parameters into the correct GET-parameter forms.
@@ -109,12 +108,12 @@ public class NReader {
 			String parameter3 = (search == null || search.equals("")) ? null
 					: "&search=" + URLEncoder.encode(search, "UTF-8");
 
-			finalList = (List<NCourse>) XMLParser.parseFile(openConnection(
+			return (List<NCourse>) XMLParser.parseFile(openConnection(
 					"courses", parameter1, parameter2, parameter3));
 		} catch (IOException e) {
 			// This should never happen.
+			return new ArrayList<NCourse>();
 		}
-		return finalList;
 	}
 
 	/**
@@ -124,7 +123,7 @@ public class NReader {
 	 *            The ID of the course, from which to get info.
 	 * @param courseName
 	 *            The name of the course, from which to get info.
-	 * @return The course for which the overview was for, or a new Course, if
+	 * @return The course for which the overview was for, or a new Course if
 	 *         there was something wrong with the connection.
 	 */
 	public NCourse getCourseOverview(String courseID, String courseName) {
@@ -151,7 +150,7 @@ public class NReader {
 	 * 
 	 * @param course
 	 *            The course, from which to get the lectures.
-	 * @return List containing the lectures for given course, or an empty list,
+	 * @return List containing the lectures for given course, or an empty list
 	 *         if something went wrong with the connection.
 	 */
 	@SuppressWarnings("unchecked")
@@ -180,7 +179,7 @@ public class NReader {
 	 * 
 	 * @param course
 	 *            The course, from which to get the exercises.
-	 * @return List containing the exercises for given course, or an empty list,
+	 * @return List containing the exercises for given course, or an empty list
 	 *         if there was a problem with the connection.
 	 */
 	@SuppressWarnings("unchecked")
@@ -239,7 +238,7 @@ public class NReader {
 	 * 
 	 * @param course
 	 *            The course, from which to get the other events.
-	 * @return List of this course's other events, or an empty list, if there
+	 * @return List of this course's other events, or an empty list if there
 	 *         was a problem with the connection.
 	 */
 	@SuppressWarnings("unchecked")
@@ -266,6 +265,7 @@ public class NReader {
 	 * The method for getting InputSource of the appropriate XML-file from the
 	 * Noppa API.
 	 * 
+	 * @see #openConnection(String, String, String, String)
 	 * @param URL
 	 *            The appropriate part of Noppa API you want to connect to. For
 	 *            example "course".
@@ -279,8 +279,9 @@ public class NReader {
 
 	/**
 	 * The method for getting InputSource of the appropriate XML-file from the
-	 * Noppa API.
+	 * Noppa API. Only used with departments.
 	 * 
+	 * @see #openConnection(String, String, String, String)
 	 * @param URL
 	 *            The appropriate part of Noppa API you want to connect to. For
 	 *            example "course".
@@ -298,7 +299,7 @@ public class NReader {
 
 	/**
 	 * The method for getting InputSource of the appropriate XML-file from the
-	 * Noppa API.
+	 * Noppa API. Only used directly when searching for courses.
 	 * 
 	 * @param URL
 	 *            The appropriate part of Noppa API you want to connect to. For
@@ -338,6 +339,7 @@ public class NReader {
 			}
 			return new InputSource(connection.openStream());
 		} catch (IOException e) {
+			// This shouldn't happen.
 			throw e;
 		}
 	}

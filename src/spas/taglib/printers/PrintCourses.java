@@ -19,7 +19,7 @@ import spas.usercontrol.UserCourseHandler;
  * Prints out user's courses accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.1
  * @see UserCourseHandler
  * @see NReader
@@ -29,6 +29,7 @@ public class PrintCourses extends TagSupport {
 
 	@Override
 	public int doStartTag() {
+		
 		// Get writer and request.
 		JspWriter out = pageContext.getOut();
 		HttpServletRequest request = (HttpServletRequest) pageContext

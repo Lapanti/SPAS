@@ -15,12 +15,15 @@ import spas.usercontrol.UserHandler;
  * front page, otherwise prints accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
  * @see UserHandler
  * 
  */
 public class RemoveUser extends TagSupport {
+	/**
+	 * Userhandler used in this tag.
+	 */
 	private UserHandler handler = new UserHandler();
 
 	@Override

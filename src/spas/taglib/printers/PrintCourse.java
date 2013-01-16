@@ -2,6 +2,7 @@ package spas.taglib.printers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -25,14 +26,22 @@ import spas.usercontrol.UserCourseHandler;
  * added.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
+ * @see NReader
+ * @see UserCourseHandler
  * 
  */
 public class PrintCourse extends TagSupport {
 
 	@Override
 	public int doStartTag() {
+		/*
+		 * A word of warning: this method is long, but I had no good way to
+		 * split it into better and smaller methods, or at least I couldn't
+		 * think of one.
+		 */
+
 		// Get request and writer.
 		HttpServletRequest request = (HttpServletRequest) pageContext
 				.getRequest();
@@ -41,7 +50,7 @@ public class PrintCourse extends TagSupport {
 		// Get given id and name.
 		String id = request.getParameter("id");
 		String name = request.getParameter("name");
-		
+
 		// Get the course.
 		NCourse c = new NReader().getCourseOverview(id, name);
 
@@ -82,9 +91,7 @@ public class PrintCourse extends TagSupport {
 					+ "</td></tr>");
 			out.println("<table><br/><br/><br/>");
 
-			/*
-			 * If user pressed add, try to add course and print appropriately.
-			 */
+			// If user pressed add, try to add course and print appropriately.
 			if (request.getParameter("add") != null) {
 				if (handler.addCourse(c)) {
 					out.println("<p class='success'>Kurssi lisättiin"
@@ -154,9 +161,9 @@ public class PrintCourse extends TagSupport {
 	 * Builds String representation in HTML for an added course's edit form.
 	 * 
 	 * @param c
-	 *            Course to be transformed.
+	 *            Course to be edited.
 	 * @param path
-	 *            Path to requested url.
+	 *            Path to url using this tag.
 	 * @param handler
 	 *            Coursehandler for user.
 	 * @return HTML-representation of course.
@@ -165,9 +172,7 @@ public class PrintCourse extends TagSupport {
 			UserCourseHandler handler) {
 		String course = "";
 
-		/*
-		 * Get course's groups and insert them into a set to avoid duplicates.
-		 */
+		// Get course's groups and insert them into a set to avoid duplicates.
 		List<NEvent> exercises = new NReader().getCourseExercises(c);
 		Collection<String> groups = new HashSet<String>();
 		for (NEvent e : exercises) {
@@ -179,8 +184,10 @@ public class PrintCourse extends TagSupport {
 		}
 		String groupmenu = "";
 		if (groups.size() > 0) {
+			// Add groups to List for sorting.
 			groups = new ArrayList<String>(groups);
 			Collections.sort((List<String>) groups);
+
 			/*
 			 * If course had groups, get chosen and then create a form to pick a
 			 * new group.
@@ -218,7 +225,9 @@ public class PrintCourse extends TagSupport {
 		}
 
 		// Build year-selection menu.
-		int[] years = { 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 };
+		int pyear = Calendar.getInstance().get(Calendar.YEAR);
+		int[] years = { pyear - 1, pyear, pyear + 1, pyear + 2, pyear + 3,
+				pyear + 4, pyear + 5 };
 		String yearmenu = "Suoritusvuosi: <select name='year'>";
 		// Loop through years and add them to menu.
 		for (int year : years) {

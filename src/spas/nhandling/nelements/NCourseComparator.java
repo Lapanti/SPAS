@@ -6,7 +6,7 @@ import java.util.Comparator;
  * Compares courses to each other according to their id's.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.2
  *
  */

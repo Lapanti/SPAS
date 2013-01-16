@@ -9,16 +9,19 @@ import javax.servlet.jsp.tagext.TagSupport;
 import spas.usercontrol.UserHandler;
 
 /**
- * Tries to change user's email, whether it works or not, prints out
+ * Tries to change user's email, whether it works or not prints out
  * accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
  * @see UserHandler
  * 
  */
 public class ChangeEmail extends TagSupport {
+	/**
+	 * The UserHandler used with this tag.
+	 */
 	private UserHandler handler = new UserHandler();
 
 	@Override

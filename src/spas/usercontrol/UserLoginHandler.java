@@ -20,7 +20,7 @@ import spas.XMLTools;
  * 
  * @see UserHandler
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  */
 public class UserLoginHandler {

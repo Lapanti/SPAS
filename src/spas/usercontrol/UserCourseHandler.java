@@ -133,6 +133,12 @@ public class UserCourseHandler {
 		return false;
 	}
 
+	/**
+	 * Returns the year in which user has planned to complete course.
+	 * 
+	 * @param id Course's id.
+	 * @return Year in which user has planned to complete given course.
+	 */
 	public int getExecyear(String id) {
 		try {
 			// Parse file to document.
@@ -159,6 +165,12 @@ public class UserCourseHandler {
 		return 0;
 	}
 
+	/**
+	 * Get the period in which user has planned to complete course.
+	 * 
+	 * @param id Course's id.
+	 * @return The period in which user had planned to complete course.
+	 */
 	public String getExecperiod(String id) {
 		try {
 			// Parse file to document.
@@ -185,6 +197,14 @@ public class UserCourseHandler {
 		return "";
 	}
 
+	/**
+	 * Change the planned completion of course.
+	 * 
+	 * @param id Course's id.
+	 * @param year Year in which user has planned to complete course.
+	 * @param period Period in which user has planned to complete course.
+	 * @return <code>true</code>, if nothing went wrong.
+	 */
 	public boolean changeExec(String id, int year, String period) {
 		try {
 			// Parse file.

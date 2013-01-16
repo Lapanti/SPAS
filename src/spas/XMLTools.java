@@ -28,7 +28,7 @@ import org.xml.sax.SAXException;
  * Contains static methods for helping with XML reading and writing.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.2
  * 
  */
@@ -38,10 +38,6 @@ public class XMLTools {
 	 */
 	private static DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory
 			.newInstance();
-
-	private XMLTools() {
-		throw new InstantiationError("Creation of this object is not allowed.");
-	}
 
 	/**
 	 * Get tag value of given tag from element.

@@ -39,14 +39,25 @@ import spas.nhandling.nelements.NEvent;
  * Class for creating an iCalendar representation of user's courses' events.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.2
+ * @see UserCourseHandler
+ * @see NReader
  * 
  */
 public class CalendarCreator {
+	/**
+	 * UserCourseHandler that CalendarCreator uses.
+	 */
 	private UserCourseHandler handler;
+	/**
+	 * NReader that CalendarCreator uses.
+	 */
 	private NReader nreader = new NReader();
-	File userfile;
+	/**
+	 * File containing user's calendar.
+	 */
+	private File userfile;
 
 	/**
 	 * Constructor for a CalendarCreator. Nothing special here.

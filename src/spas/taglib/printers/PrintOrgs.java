@@ -16,7 +16,7 @@ import spas.nhandling.nelements.NElement;
  * Prints out organizations in <code>option</code>-tags.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
  * @see NReader
  *

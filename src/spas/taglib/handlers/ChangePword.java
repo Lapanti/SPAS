@@ -13,12 +13,15 @@ import spas.usercontrol.UserHandler;
  * accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
  * @see UserHandler
  * 
  */
 public class ChangePword extends TagSupport {
+	/**
+	 * Userhandler used with this tag.
+	 */
 	private UserHandler handler = new UserHandler();
 
 	@Override

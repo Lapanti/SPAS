@@ -21,7 +21,7 @@ import sun.misc.BASE64Encoder;
  * target="_bank">here</a> as a base.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  * 
  */
@@ -30,7 +30,7 @@ public class UserHandler {
 	 * The count for how many times a password will be digested during
 	 * encryption. Should be at least 1000.
 	 */
-	private final static int ITERATION_COUNT = 1200;
+	private final static int ITERATION_COUNT = 10000;
 	/**
 	 * Used for the XML-perspective
 	 */

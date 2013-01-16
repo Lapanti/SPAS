@@ -1,9 +1,8 @@
 /**
- * Java-classes used in SPAS. This package only contains only a couple of 
- * small overall classes.
+ * Java-classes used in SPAS.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  */
 package spas;

@@ -17,19 +17,23 @@ import javax.mail.internet.MimeMessage;
  * Class for making and sending a new password to user's email.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.2
+ * @see UserLoginHandler
  * 
  */
 public class EmailNewPassword {
 	/**
 	 * The email, from which to send new passwords.
 	 */
-	private final String from = "";
+	private final String from = "do.not.reply.SPAS@gmail.com";
 	/**
 	 * The above email's password.
 	 */
 	private final String pword = "";
+	/**
+	 * UserLoginHandler used in EmailNewPassword
+	 */
 	private UserLoginHandler handler;
 
 	/**

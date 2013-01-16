@@ -12,7 +12,7 @@ import spas.usercontrol.UserCourseHandler;
  * Handles removal form for a course. Prints accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
  * @see UserCourseHandler
  * 

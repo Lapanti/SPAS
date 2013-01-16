@@ -4,18 +4,18 @@ package spas.nhandling.nelements;
  * Enumeration to differentiate between different NElements.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  * 
  */
 public enum NElementType {
 	/**
-	 * Organizations' are the top-level structure for searching courses.
+	 * Organizations are the top-level structure for searching courses.
 	 */
 	ORGANIZATION,
 
 	/**
-	 * Departments' are a part of an organization, differentiating further on
+	 * Departments are a part of an organization, differentiating further on
 	 * the type of courses offered.
 	 */
 	DEPARTMENT,
@@ -33,7 +33,17 @@ public enum NElementType {
 	/**
 	 * @see NEvent
 	 */
-	EXERCISE, ASSIGNMENT, OTHER;
+	EXERCISE, 
+	
+	/**
+	 * @see NEvent
+	 */
+	ASSIGNMENT, 
+	
+	/**
+	 * @see NEvent
+	 */
+	OTHER;
 
 	@Override
 	public String toString() {

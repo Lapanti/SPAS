@@ -18,7 +18,7 @@ import spas.nhandling.nelements.NCourse;
  * prints accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
  * @see NReader
  * 

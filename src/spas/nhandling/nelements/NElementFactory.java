@@ -6,19 +6,15 @@ package spas.nhandling.nelements;
  * NElement's own constructor.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  * 
  */
 public class NElementFactory {
 
-	private NElementFactory() {
-		throw new InstantiationError("Creation of this object is not allowed.");
-	}
-
 	/**
 	 * The only point in NelementFactory, which creates the appropriate
-	 * NoppaElements according to NelementType.
+	 * NElements according to {@link NElementType }.
 	 * 
 	 * @param net
 	 *            Which kind of NElement is called for.

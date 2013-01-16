@@ -2,20 +2,29 @@ package spas.nhandling.nelements;
 
 /**
  * Superclass for all different NElements. Organization and department types are
- * made straight out of this class. Point for this class is to get an objet-type
- * representation of all the information needed from <a href=
+ * made straight out of this class. Point for this class is to get an
+ * object-type representation of all the information needed from <a href=
  * "https://wiki.aalto.fi/download/attachments/71895449/NoppaAPI_eng.pdf?version=2&modificationDate=1352361073000"
  * target="_blank">the Noppa API</a>.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  * @see NElementType
  * 
  */
 public class NElement {
+	/**
+	 * Id for NElement.
+	 */
 	private String id = "";
+	/**
+	 * Id for organization NElement belongs to. Only used with departments.
+	 */
 	private String orgid = "";
+	/**
+	 * Name for NElement.
+	 */
 	private String name = "";
 
 	/**

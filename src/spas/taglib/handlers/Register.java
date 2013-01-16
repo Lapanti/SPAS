@@ -13,12 +13,15 @@ import spas.usercontrol.UserHandler;
  * Tries to register user into the database. Either way, prints accordingly.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 1.0
  * @see UserHandler
  * 
  */
 public class Register extends TagSupport {
+	/**
+	 * Userhandler used in this tag.
+	 */
 	private UserHandler handler = new UserHandler();
 
 	@Override

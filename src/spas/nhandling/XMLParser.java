@@ -29,27 +29,25 @@ import edu.emory.mathcs.backport.java.util.Collections;
  * Parses XML into NElement objects. Needs InputSource to actually do something.
  * Can only parse XML-files as specified in <a href=
  * "https://wiki.aalto.fi/download/attachments/71895449/NoppaAPI_eng.pdf?version=2&modificationDate=1352361073000"
- * target="_blank">the Noppa API</a>.
+ * target="_blank">the Noppa API</a>. Usually works in tandem with
+ * {@link NReader}.
  * 
  * @see NReader
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  */
 public class XMLParser {
 
-	private XMLParser() {
-		throw new InstantiationError("Creation of this object is not allowed.");
-	}
-
 	/**
 	 * Parses XML-file into NElement-objects. Gathers all the information
-	 * relevant to NElement-type into NElement, NCourse or NEvent forms.
+	 * relevant to NElement-type into NElement, NCourse or NEvent
+	 * representation.
 	 * 
 	 * @param is
 	 *            InputSource for the XML-file to parse.
 	 * @return Objectified version of the XML-file, <code>List</code> with class
-	 *         that extends NElement.
+	 *         that extends NElement, or an empty list if something went wrong.
 	 */
 	public static List<? extends NElement> parseFile(InputSource is) {
 
@@ -81,7 +79,7 @@ public class XMLParser {
 		} catch (IOException | SAXException | ParserConfigurationException e) {
 			// These should never happen.
 		}
-		// In case of an error, return an empty list.
+		// In case of an error or wrong XML-file, return an empty list.
 		return new ArrayList<NElement>();
 	}
 
@@ -187,7 +185,7 @@ public class XMLParser {
 	 * 
 	 * @param doc
 	 *            Document to be parsed.
-	 * @return A list containing the one course parse correctly from Document.
+	 * @return A list containing the one course parsed correctly from Document.
 	 */
 	private static List<NCourse> parseCourse(Document doc) {
 		List<NCourse> objs = new ArrayList<NCourse>();
@@ -230,7 +228,7 @@ public class XMLParser {
 		List<NEvent> objs = new ArrayList<NEvent>();
 
 		// Create the Calendar-basis and add TimeZone to them. Also create
-		// appropriate String-Date formatter.
+		// appropriate String->Date formatter.
 		Calendar startDate = new GregorianCalendar();
 		startDate.setTimeZone(TimeZone.getTimeZone("Europe/Helsinki"));
 		Calendar endDate = (Calendar) startDate.clone();
@@ -242,7 +240,7 @@ public class XMLParser {
 			// Copy startdate and enddate to new Calendars.
 			startDate = (Calendar) startDate.clone();
 			endDate = (Calendar) endDate.clone();
-			
+
 			// Create the NEvent object.
 			NEvent lecture = (NEvent) NElementFactory
 					.createNElement(NElementType.LECTURE);
@@ -308,8 +306,6 @@ public class XMLParser {
 
 			// Getting and setting the group for the exercise.
 			exercise.setGroup(XMLTools.getTagValue("group", e));
-
-			// Getting the starting time for the exercise.
 
 			// Getting and setting the location for the exercise.
 			exercise.setLocation(XMLTools.getTagValue("location", e));

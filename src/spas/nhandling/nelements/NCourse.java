@@ -9,16 +9,34 @@ import java.util.List;
  * information considering courses than other NElements.
  * 
  * @author Lauri Lavanti
- * @version 1.2
+ * @version 1.2.1
  * @since 0.1
  * 
  */
 public class NCourse extends NElement {
+	/**
+	 * The amount of credits course is worth.
+	 */
 	private String credits = "";
+	/**
+	 * Periods in which course is offered.
+	 */
 	private List<String> periods = new ArrayList<String>();
+	/**
+	 * Course's content.
+	 */
 	private String content = "";
+	/**
+	 * User's selected group for course.
+	 */
 	private String group = "";
+	/**
+	 * User's selected period for course.
+	 */
 	private String execperiod = "";
+	/**
+	 * User's selected year for course.
+	 */
 	private int execyear = Calendar.getInstance().get(Calendar.YEAR);
 
 	/**
@@ -118,7 +136,8 @@ public class NCourse extends NElement {
 	/**
 	 * Basic getter for user's period for completing course.
 	 * 
-	 * @return The period in which user will complete course.
+	 * @return The period in which user will complete course, or if not chosen,
+	 *         the first period in which course is offered.
 	 */
 	public String getExecperiod() {
 		if (execperiod != null) {
@@ -143,7 +162,8 @@ public class NCourse extends NElement {
 	/**
 	 * Basic getter for the year in which user will complete course.
 	 * 
-	 * @return The year in which user will complete course.
+	 * @return The year in which user will complete course, or if not chosen,
+	 *         current year.
 	 */
 	public int getExecyear() {
 		return execyear;
