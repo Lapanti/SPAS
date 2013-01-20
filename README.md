@@ -20,5 +20,7 @@ Technologies it uses:<br/>
 - Custom tags
 - iCal4j (http://wiki.modularity.net.au/ical4j/index.php?title=Main_Page)
 
+Documentation can be found online at http://lavanti.fi/lauri/SPAS/doc
+
 It will ultimately take all the information needed for displaying a smart-looking calendar view from our school's (Aalto University) system, that provides a GET-based interface.
 You will be able to login/register and then save courses you intend to take and it will form the view from those.
