@@ -30,7 +30,7 @@ public class EmailNewPassword {
 	/**
 	 * The above email's password.
 	 */
-	private final String pword = "StudyPlan";
+	private final String pword = "";
 	/**
 	 * UserLoginHandler used in EmailNewPassword
 	 */
