@@ -4,14 +4,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import edu.emory.mathcs.backport.java.util.Collections;
 
 import spas.nhandling.NReader;
 import spas.nhandling.nelements.NCourse;

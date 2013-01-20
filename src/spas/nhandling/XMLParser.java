@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
@@ -23,7 +24,6 @@ import spas.nhandling.nelements.NElement;
 import spas.nhandling.nelements.NElementFactory;
 import spas.nhandling.nelements.NElementType;
 import spas.nhandling.nelements.NEvent;
-import edu.emory.mathcs.backport.java.util.Collections;
 
 /**
  * Parses XML into NElement objects. Needs InputSource to actually do something.
